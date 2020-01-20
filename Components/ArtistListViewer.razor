@@ -1,0 +1,85 @@
+﻿@using ObjectLibrary.BusinessObjects
+@using BlazorStyled
+
+<div class="artistlistpagenumber">
+    Featured Artists<br />
+    @PageDisplayText
+</div>
+
+<Styled @bind-Classname="@ArtistStyle1">
+    background-image: url('@Artist1ProfilePictureUrl');    
+    position: fixed;
+    top: 74%;
+    left: 16%;
+    width: 256px;
+    height: 256px;
+    transform: scale(0.25);
+    transform-origin: left;   
+    border: 2px solid black;
+</Styled>
+<Styled @bind-Classname="@ArtistStyle2">
+    background-image: url('@Artist2ProfilePictureUrl');    
+    position: fixed;
+    top: 74%;
+    left: 28%;
+    width: 256px;
+    height: 256px;
+    transform: scale(0.25);
+    transform-origin: left;   
+    border: 2px solid black;
+</Styled>
+<Styled @bind-Classname="@ArtistStyle3">
+    background-image: url('@Artist3ProfilePictureUrl');    
+    position: fixed;
+    top: 74%;
+    left: 40%;
+    width: 256px;
+    height: 256px;
+    transform: scale(0.25);
+    transform-origin: left;   
+    border: 2px solid black;
+</Styled>
+<Styled @bind-Classname="@ArtistStyle4">
+    background-image: url('@Artist4ProfilePictureUrl');    
+    position: fixed;
+    top: 74%;
+    left: 52%;
+    width: 256px;
+    height: 256px;
+    transform: scale(0.25);
+    transform-origin: left;   
+    border: 2px solid black;
+</Styled>
+<Styled @bind-Classname="@ArtistStyle5">
+    background-image: url('@Artist5ProfilePictureUrl');    
+    position: fixed;
+    top: 74%;
+    left: 64%;
+    width: 256px;
+    height: 256px;
+    transform: scale(0.25);
+    transform-origin: left;   
+    border: 2px solid black;
+</Styled>
+
+@if (HasArtist1)
+{  
+    <button class="@ArtistStyle1"><span class="text-white text-center fontarial48 moveup160">@Artist1Name</span></button>
+}
+@if (HasArtist2)
+{  
+    <button class="@ArtistStyle2"><span class="text-white text-center fontarial48 moveup160">@Artist2Name</span></button>
+}
+@if (HasArtist3)
+{  
+    <button class="@ArtistStyle3"><span class="text-white text-center fontarial48 moveup160">@Artist3Name</span></button>
+}
+@if (HasArtist4)
+{  
+    <button class="@ArtistStyle4"><span class="text-white text-center fontarial48 moveup160">@Artist4Name</span></button>
+}
+@if (HasArtist5)
+{  
+    <button class="@ArtistStyle5"><span class="text-white text-center fontarial48 moveup160">@Artist5Name</span></button>
+}
+

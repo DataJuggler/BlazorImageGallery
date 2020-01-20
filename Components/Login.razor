@@ -1,0 +1,107 @@
+﻿@using DataJuggler.UltimateHelper.Core
+@using ObjectLibrary.BusinessObjects
+@using DataJuggler.Blazor.FileUpload
+@using BlazorStyled
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@inject ProtectedLocalStorage ProtectedLocalStore
+
+<Styled @bind-Classname="@ProfileImageStyle">
+    background-image: url('@ProfileImageUrl');
+    width: 256px;
+    height: 256px;
+    transform: scale(0.5);
+    transform-origin: left;
+</Styled>
+<Styled @bind-Classname="@BlueProgress">
+    background-image: url('../Images/Progress/BlueProgress.png');
+    width: 128px;
+    height: 128px;
+    transform: scale(0.5);
+    transform-origin: left;
+    margin-left: 32px;
+    margin-top: -32px;
+</Styled>
+
+@if (TextHelper.Exists(message))
+{
+    <div class="text-white">@message</div>
+}
+
+@if (!HasArtist)
+{
+    @if (NoAction)
+    {
+        <button class="button" @onclick="SetActionNewUserSignUp">Sign Up</button>
+        <button class="button moveleft48" @onclick="SetActionLoginExistingUser">Login</button>
+    }
+    else
+    {
+        @if (this.Action == "NewUserSignUp")
+        {
+            <div class="movedown16">
+                Name<br />
+                <input type="text" class="marginbottom8" @bind="DisplayName" />
+                <br />
+                Email Address<br />
+                <input class="marginbottom8" type="text" @bind="EmailAddress" />
+                <br />
+                Password<br />
+                <input class="marginbottom8" type="password" @bind="Password" />
+                <br />
+                Confirm Password<br />
+                <input type="password" @bind="ConfirmPassword" />
+                <span>@Message</span>
+                <br />
+                <div class="profilepicture">
+                    Profile Picture<br />
+                    <label class="custom-file-upload">
+                        <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
+                                    PartialGuidLength="10" MaxFileSize="4194304" FilterByExtension="true" 
+                                    AllowedExtensions=".jpg;.png;" ShowResetButton="true" OnReset="OnReset"
+                                    ButtonClassName="button" UploadFolder="wwwroot/Images/Artists"
+                                    ResetButtonText="Change" Tag="New Profile Artist Image Selected"
+                                    CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
+                                    FileTooLargeMessage="The file uploaded must be 4 megabytes or smaller.">
+                        </FileUpload>
+                        @if (showUploadButton)
+                        {
+                            <span class="buttonwide height48"><span class="movedown8 fontverdana20">Choose File</span></span>
+                        }
+                    </label>
+                </div>
+                <div class="profilepicturecontainer">
+                    <div class="@ProfileImageStyle"></div>
+                </div>
+                <div>
+                    <button class="button " @onclick="HandleNewUserSignUp">Sign Up</button>
+                    <button class="button moveleft48" @onclick="Cancel">Cancel</button>
+                </div>
+                <div class="@blueProgress"></div>
+            </div>
+        }
+        else if (this.Action == "LoginExistingUser")
+        {
+            <div class="movedown16 text-white">
+                Email Address<br />
+                <input class="marginbottom8" type="text" @bind="EmailAddress" />
+                <br />
+                Password<br />
+                <input class="marginbottom8" type="password" @bind="Password" />
+                <br />
+                Remember
+                <input class="movedown4 moveright4" type="checkbox" @bind="RememberLogin" />
+                <br />
+                <button class="button" @onclick="HandleLogin">Login</button>
+                <button class="button moveleft48" @onclick="Cancel">Cancel</button>
+            </div>
+        }
+    }
+}
+else
+{
+    <div class="text-white">        
+        <span class="text-right moveleft48 moveup4">Welcome, @Artist.Name</span>
+        <button class="gearicon " @onclick="ToggleProfileMenu"></button>
+        <button class="button " @onclick="SignOut">Sign Out</button>
+    </div>
+}

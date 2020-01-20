@@ -1,0 +1,15 @@
+﻿@page "/"
+@using BlazorImageGallery.Components
+@using BlazorImageGallery.Util
+
+
+<div class="logincontrol">
+    <Login OnLogin="LoginComplete"></Login>
+</div>
+
+<CascadingValue Value="GalleryManager">
+    <ArtistListViewer></ArtistListViewer>
+    <ImageListViewer></ImageListViewer>
+</CascadingValue>
+
+

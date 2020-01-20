@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>2.0.7</Version>
+    <PackageId>DataJuggler.DataTier.Net.Core.DataGateway</PackageId>
+    <Authors>DataJuggler</Authors>
+    <Company>DataJuggler</Company>
+    <Description>This is one of the four projects that make up a DataTier.Net.Core.ProjectTemplate</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Gateway.backup.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DataJuggler.Core.Cryptography" Version="1.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationLogicComponent\ApplicationLogicComponent.csproj" />
+    <ProjectReference Include="..\DataAccessComponent\DataAccessComponent.csproj" />
+    <ProjectReference Include="..\ObjectLibrary\ObjectLibrary.csproj" />
+  </ItemGroup>
+
+</Project>
