@@ -13,14 +13,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Interfaces\" />
     <Folder Include="wwwroot\Images\Artists\" />
     <Folder Include="wwwroot\Images\Gallery\" />
+    <Folder Include="wwwroot\Images\Progress\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BlazorStyled" Version="1.1.0" />
-    <PackageReference Include="DataJuggler.Blazor.FileUpload" Version="1.2.7" />
+    <PackageReference Include="DataJuggler.Blazor.Components" Version="1.0.7" />
+    <PackageReference Include="DataJuggler.Blazor.FileUpload" Version="1.3.0" />
     <PackageReference Include="DataJuggler.Core.Cryptography" Version="1.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.1.0-preview4.19579.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.ProtectedBrowserStorage" Version="0.1.0-alpha.19521.1" />
   </ItemGroup>
 

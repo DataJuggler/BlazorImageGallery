@@ -1,0 +1,56 @@
+﻿@using BlazorImageGallery.Components
+@using BlazorImageGallery.Util
+@using DataJuggler.Blazor.FileUpload
+
+<Styled @bind-Classname="@ProfileImageStyle">
+    background-image: url('@ProfileImageUrl');
+    width: 256px;
+    height: 256px;
+    transform: scale(0.5);
+    transform-origin: left;
+</Styled>
+
+<div class="centerform">
+     <div class="movedown16">
+        Name<br />
+        <input type="text" class="marginbottom8" @bind="DisplayName" />
+        <br />
+        Email Address<br />
+        <input class="marginbottom8" type="text" @bind="EmailAddress" />
+        <br />
+        Password<br />
+        <input class="marginbottom8" type="password" @bind="Password" />
+        <br />
+        Confirm Password<br />
+        <input type="password" @bind="ConfirmPassword" />
+        <div class="signupmessage">
+            <span>@Message</span>
+        </div>
+        <br />
+        <div class="clear movedown8">
+            Profile Picture<br  />
+            <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
+                ShowStatus="false"  PartialGuidLength="10" MaxFileSize="1048576" FilterByExtension="true" 
+                ShowCustomButton="true" ButtonText="Select File" ButtonClassName="button" UploadFolder="wwwroot/images/artists"
+                AllowedExtensions=".jpg;.png;" ShowResetButton="true" OnReset="OnReset" ResetButtonText="Change"
+                CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
+                RequiredHeight="256" RequiredWidth="256" CustomRequiredSizeMessage="File must be 256 x 256."
+                InputFileClassName="customfileupload" FileTooLargeMessage="The file uploaded must be 1 megabyte or smaller.">
+            </FileUpload>
+        </div>     
+        <br />
+        <div class="profilepicturecontainer">
+            <div class="@ProfileImageStyle"></div>
+        </div>
+        <div class="progresscontainer">
+            <ProgressBar Subscriber=this Increment="5" Interval="40" Scale=".4"
+            Continuous="true"></ProgressBar>
+        </div>
+        <div>
+            <button class="button " @onclick="HandleNewUserSignUp">Sign Up</button>
+            <button class="button moveleft48" @onclick="Cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+

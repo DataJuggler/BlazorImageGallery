@@ -2,19 +2,19 @@
 
 #region using statements
 
-using System;
-using Microsoft.AspNetCore.ProtectedBrowserStorage;
-using System.Threading.Tasks;
-using DataJuggler.UltimateHelper.Core;
-using ObjectLibrary.BusinessObjects;
-using ObjectLibrary.Enumerations;
-using ObjectLibrary.Models;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Components;
+using BlazorImageGallery.Models;
+using DataJuggler.Blazor.Components;
+using DataJuggler.Blazor.Components.Interfaces;
 using DataGateway.Services;
-using DataJuggler.Core.Cryptography;
 using DataJuggler.Blazor.FileUpload;
-using System.IO;
+using DataJuggler.UltimateHelper.Core;
+using Microsoft.AspNetCore.Components;
+using ObjectLibrary.BusinessObjects;
+using ObjectLibrary.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -25,7 +25,7 @@ namespace BlazorImageGallery.Components
     /// <summary>
     /// This is the code behind for the login control.
     /// </summary>
-    public partial class Login
+    public partial class Login : IBlazorComponentParent, IProgressSubscriber, IBlazorComponent
     {
         
         #region Private Variables
@@ -44,7 +44,15 @@ namespace BlazorImageGallery.Components
         private bool rememberLogin;
         private string storedPasswordHash;
         private bool showProgress;
-        private string blueProgress;
+        private SignUp signUp;
+        private ProgressBar progressBar;
+        private bool loginProcessed;
+        private bool loginComplete;
+        private IBlazorComponentParent parent;
+        private List<IBlazorComponent> children;
+        private string name;
+
+        private LoginResponse loginResponse;
         private const string NoProfileImagePath = "../images/avatars/NoProfileImage.png";
         #endregion
         
@@ -74,176 +82,94 @@ namespace BlazorImageGallery.Components
                 StateHasChanged();
             }
             #endregion
+
+            #region FindChildByName(string name)
+            /// <summary>
+            /// This method returns the Child Component By Name
+            /// </summary>
+            public IBlazorComponent FindChildByName(string name)
+            {
+                // initial value
+                IBlazorComponent child = null;
+                
+                // if the value for HasChildren is true
+                if ((HasChildren) && (!String.IsNullOrEmpty(name)))
+                {
+                    // Iterate the collection of IBlazorComponent objects
+                    foreach (IBlazorComponent childComponent in Children)
+                    {
+                        // if this is the item being sought
+                        if (childComponent.Name == name)
+                        {
+                            // set the return value
+                            child = childComponent;
+                            
+                            // break out of the loop
+                            break;
+                        }
+                    }
+                }
+                
+                // return value
+                return child;
+            }
+            #endregion
             
             #region HandleLogin()
             /// <summary>
             /// Handle the user logging in
             /// </summary>
-            private async void HandleLogin()
+            private void HandleLogin()
             {
-                // local
-                LoginResponse loginResponse = null;
-
                 try
                 {
-                    // If the StoredPasswordHash exists, then we know this is from a RememberPassword
-                    bool passwordIsAlreadyHashed = TextHelper.Exists(StoredPasswordHash);
-
-                    // if the value for passwordIsAlreadyHashed is true
-                    if (passwordIsAlreadyHashed)
+                    // if the value for HasProgressBar is true
+                    if (HasProgressBar)
                     {
-                        // Get the loginResponse using the StoredPasswordHash
-                        loginResponse = await ArtistService.Login(emailAddress, StoredPasswordHash, passwordIsAlreadyHashed);     
-                    }
-                    else
-                    {
-                        // Get the loginResponse
-                        loginResponse = await ArtistService.Login(emailAddress, password);     
-                    }
-                
-                    // if the loginResponse exists
-                    if ((NullHelper.Exists(loginResponse)) && (loginResponse.Success))
-                    {
-                        // set the player
-                        artist = loginResponse.Artist;
+                        // Set ShowProgress to true
+                        ShowProgress = true;
+                        
+                        // Reset just in case this is being run again
+                        LoginProcessed = false;
+                        LoginComplete = false;
 
-                        // Notify the caller of the Login
-                        await OnLogin.InvokeAsync(loginResponse);
-
-                        // Refresh
-                        StateHasChanged();
-
-                        // if remember login details is true
-                        if (RememberLogin)
-                        {
-                            await ProtectedLocalStore.SetAsync("RememberLogin", rememberLogin);
-                            await ProtectedLocalStore.SetAsync("ArtistEmailAddress", artist.EmailAddress);
-                            await ProtectedLocalStore.SetAsync("ArtistPasswordHash", artist.PasswordHash);
-                        }
-                        else
-                        {
-                            // Remove any locally stored items
-                            RemovedLocalStoreItems();
-                        }
-                    }
+                        // Start the Progressbar timer
+                        progressBar.Start();
+                    }                    
                 }
                 catch (Exception error)
                 {
                     // for debugging only
                     DebugHelper.WriteDebugError("HandleLogin", "Login.cs", error);
                 }
+                finally
+                {  
+                    // Refresh the UI
+                    StateHasChanged();
+                }
             }
             #endregion
             
-            #region HandleNewUserSignUp()
+            #region HandleRememberPassword()
             /// <summary>
-            /// This method creates a new user and saves itl
+            /// This method Handle Remember Password
             /// </summary>
-            private async void HandleNewUserSignUp()
+            public async void HandleRememberPassword()
             {
-                try
+                // if remember login details is true
+                if ((HasLoginResponse) && (RememberLogin) && (LoginResponse.HasArtist))
                 {
-                    // locals
-                    string passwordHash = "";
-                    bool abort = false;
-                    message = "";
+                    // Set the artist
+                    artist = LoginResponse.Artist;
 
-                    // Show the progress bar
-                    ShowProgress = true;
-
-                    // create a new Artist
-                    this.Artist = new Artist();
-                
-                    // get the key
-                    string key = EnvironmentVariableHelper.GetEnvironmentVariableValue("BlazorImageGallery");
-                
-                    // if the key was found
-                    if (TextHelper.Exists(key))
-                    {
-                        // get the encryptedPassword
-                        passwordHash = CryptographyHelper.GeneratePasswordHash(password, key, 3);
-                    }
-                
-                    // set the artistPath
-                    string artistPath = Path.Combine("Images/Gallery", displayName.Replace(" ", ""));
-
-                    // saves going to the database to lookup if the artist exists
-                    if (Directory.Exists(artistPath))
-                    {
-                        // abort due to artist already exists
-                        abort = true;
-
-                        // Set the message
-                        Message = "This artist already exists. Sign in if this is you.";
-                    }
-                    else
-                    {
-                        // create the artistFolder
-                        Directory.CreateDirectory(artistPath);
-                    }
-                
-                    // if we should continue
-                    if (!abort)
-                    {
-                        // set the bound properties
-                        artist.EmailAddress = emailAddress;
-                        artist.PasswordHash = passwordHash;
-                        artist.CreatedDate = DateTime.Now;
-                        artist.Active = true;
-                        artist.Name = displayName;
-                        artist.CreatedDate = DateTime.Now;
-                        artist.LastUpdated = DateTime.Now;
-                        artist.FolderPath = artistPath;
-                        artist.ProfilePicture = ProfileImageUrl;
-                        artist.Active = true;
-                
-                        // Validate this player
-                        bool isValid = ValidateArtist();
-                
-                        // if isValid
-                        if (isValid)
-                        {
-                            // perform the save
-                            bool saved = await ArtistService.SaveArtist(ref artist);
-                    
-                            // if saved
-                            if (saved)
-                            {
-                                // Get the loginResponse
-                                LoginResponse loginResponse = await ArtistService.Login(emailAddress, password, false);
-                        
-                                // if the loginResponse exists
-                                if (NullHelper.Exists(loginResponse))
-                                {
-                                    // set the player
-                                    artist = loginResponse.Artist;
-                            
-                                    // Perform the Login
-                                    await OnLogin.InvokeAsync(loginResponse);
-                                }
-                            }
-
-                            // Refresh
-                            StateHasChanged();
-                        }
-                        else
-                        {
-                            abort = true;
-                        }
-                   }                   
+                    await ProtectedLocalStore.SetAsync("RememberLogin", rememberLogin);
+                    await ProtectedLocalStore.SetAsync("ArtistEmailAddress", artist.EmailAddress);
+                    await ProtectedLocalStore.SetAsync("ArtistPasswordHash", artist.PasswordHash);
                 }
-                catch (Exception error)
+                else
                 {
-                    // Cancel the login
-                    Cancel();
-
-                    // for debugging only for now
-                    DebugHelper.WriteDebugError("HandleNewUserSignUp", "Login.cs", error);
-                }
-                finally
-                {
-                    // turn off progress
-                    ShowProgress = false;
+                    // Remove any locally stored items
+                    RemovedLocalStoreItems();
                 }
             }
             #endregion
@@ -259,6 +185,10 @@ namespace BlazorImageGallery.Components
                 Action = "";
                 ProfileImageUrl = NoProfileImagePath;
                 ShowUploadButton = true;
+                Name = "Login";
+
+                // Create a new collection of 'IBlazorComponent' objects.
+                this.Children = new List<IBlazorComponent>();
 
                 // Erase the displayName property
                 displayName = "";
@@ -274,6 +204,34 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region NotifyIndexPage()
+            /// <summary>
+            /// This method Notify Index Page
+            /// </summary>
+            public async void NotifyIndexPage()
+            {
+                try
+                {
+                    // if the value for HasLoginResponse is true
+                    if (HasLoginResponse)
+                    {
+                       
+
+                        // set the Artist
+                        artist = LoginResponse.Artist;
+
+                        // Notify the caller of the Login
+                        await OnLogin.InvokeAsync(loginResponse);
+                    }
+                }
+                catch (Exception error)
+                {
+                    // For debugging only
+                    DebugHelper.WriteDebugError("NotifyIndexPage", "Login", error);
+                }
+            }
+            #endregion
+            
             #region OnFileUploaded(UploadedFileInfo uploadedFileInfo)
             /// <summary>
             /// This method is called by DataJuggler.Blazor.FileUpload after a file is uploaded.
@@ -351,6 +309,32 @@ namespace BlazorImageGallery.Components
                 }
             }
             #endregion
+
+            #region OnLoginComplete(LoginResponse loginResponse)
+            /// <summary>
+            /// This method receieves the response from the login executed in another thread
+            /// </summary>
+            /// <param name="loginResponse"></param>
+            public void OnLoginComplete(LoginResponse loginResponse)
+            {
+                // If the loginResponse object exists
+                if (NullHelper.Exists(loginResponse, ProgressBar))
+                {
+                    // if the loginResponse exists
+                    if ((NullHelper.Exists(loginResponse)) && (loginResponse.Success))
+                    {
+                        // Store the LoginResponse
+                        LoginResponse = loginResponse;
+
+                        // We can't call the event call back from this thread
+                        LoginComplete = true;                        
+                    }
+
+                    // Refresh the UI
+                    Refresh();
+                }
+            }
+            #endregion
             
             #region OnReset(string notUsedButRequiredArg)
             /// <summary>
@@ -364,6 +348,186 @@ namespace BlazorImageGallery.Components
 
                  // toggle to true
                 ShowUploadButton = true;
+            }
+            #endregion
+
+            #region ProcessLogin(object data)
+            /// <summary>
+            /// This method calls the Artistervice to perform the Login
+            /// </summary>
+            public static async void ProcessLogin(object data)
+            {
+                // local
+                LoginResponse loginResponse = null;
+
+                // cast as a Loginmodel object
+                LoginModel loginModel = data as LoginModel;
+
+                // if the loginModel exists
+                if (NullHelper.Exists(loginModel))
+                {
+                    // If the StoredPasswordHash exists, then we know this is from a RememberPassword
+                    bool passwordIsAlreadyHashed = TextHelper.Exists(loginModel.StoredPasswordHash);
+
+                    // if the value for passwordIsAlreadyHashed is true
+                    if (passwordIsAlreadyHashed)
+                    {
+                        // Get the loginResponse using the StoredPasswordHash
+                        loginResponse = await ArtistService.Login(loginModel.EmailAddress, loginModel.StoredPasswordHash, passwordIsAlreadyHashed);     
+                    }
+                    else
+                    {
+                        // Get the loginResponse
+                        loginResponse = await ArtistService.Login(loginModel.EmailAddress, loginModel.Password);     
+                    }
+
+                    // if the delegate exists
+                    if (NullHelper.Exists(loginModel.OnLoginComplete))
+                    {   
+                        // Notify the delegate that the login has finished
+                        loginModel.OnLoginComplete(loginResponse);
+                    }
+                }
+            }
+            #endregion
+            
+            #region ReceiveData(Message message)
+            /// <summary>
+            /// This method Receives Data from a child or parent component
+            /// </summary>
+            public async void ReceiveData(Message message)
+            {
+                // If the message object exists
+                if (NullHelper.Exists(message))
+                {
+                    // if a NewArtist signed up
+                    if (message.Text == "New Artist Signed Up")
+                    {
+                        // if the parameters collection exists
+                        if (message.HasParameters)
+                        {
+                            // iterate the parameters                            
+                            foreach (NamedParameter parameter in message.Parameters)                                           
+                            {
+                                // if this is the name
+                                if (parameter.Name == "New Artist")
+                                {
+                                    // get the current Artist
+                                    artist = parameter.Value as Artist;
+
+                                    // Create a LoginResponse object
+                                    LoginResponse loginResponse = new LoginResponse();
+
+                                    // Set to true
+                                    loginResponse.Success = true;
+
+                                    // set the Artist
+                                    loginResponse.Artist = artist;
+
+                                    // Notify the caller of the Login
+                                    await OnLogin.InvokeAsync(loginResponse);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Refresh(string message)
+            /// <summary>
+            /// method returns the
+            /// </summary>
+            public void Refresh(string message)
+            {
+                try
+                {
+                    // If the LoginProcessed
+                    if (!LoginProcessed)
+                    {
+                        // create a new loginModel object
+                        LoginModel loginModel = new LoginModel(EmailAddress, Password, StoredPasswordHash, OnLoginComplete);
+
+                        // Start the ProcessLogin Thread
+                        Thread thread = new Thread(ProcessLogin);
+                        thread.IsBackground = true;
+                        thread.Start(loginModel);
+                    
+                        // Process the login
+                        LoginProcessed = true;
+                    }
+
+                    // if the Login has finished
+                    if (LoginComplete)
+                    {  
+                        // Stop the ProgressBar
+                        ProgressBar.Stop();
+
+                        // Handle store password or not
+                        HandleRememberPassword();
+
+                        // Notify the Index page
+                        NotifyIndexPage();
+                    }
+
+                    // Update the UI
+                    InvokeAsync(() =>
+                    {
+                        StateHasChanged();
+                    });
+                }
+                catch (Exception error)
+                {
+                    // for debugging only
+                    DebugHelper.WriteDebugError("Refresh", "Login", error);
+                }
+            }
+            #endregion
+
+            #region Refresh()
+            /// <summary>
+            /// This method is called by a Sprite when as it refreshes.
+            /// </summary>
+            public void Refresh()
+            {
+                // Update the UI
+                InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            }
+            #endregion
+
+            #region Register(IBlazorComponent component)
+            /// <summary>
+            /// This method Registers the component with this component.
+            /// </summary>
+            public void Register(IBlazorComponent component)
+            {
+                // If the component object exists
+                if (NullHelper.Exists(component, Children))
+                {
+                    // If this is the SignUp component
+                    if (component.Name == "SignUp")
+                    {
+                        // Set the Signup control
+                        this.SignUp = component as SignUp;
+                    }
+
+                    // add this child
+                   Children.Add(component);
+                }
+            }
+            #endregion
+
+            #region Register(ProgressBar progressBar)
+            /// <summary>
+            /// method returns the
+            /// </summary>
+            public void Register(ProgressBar progressBar)
+            {
+                // Store the Progress
+                ProgressBar = progressBar;
             }
             #endregion
             
@@ -411,18 +575,18 @@ namespace BlazorImageGallery.Components
             
             #region SetActionNewUserSignUp()
             /// <summary>
-            /// Set the action to NewUserSignUp so the UI changes
+            /// This method Set Action New User Sign Up
             /// </summary>
-            private void SetActionNewUserSignUp()
+            public void SetActionNewUserSignUp()
             {
-                // there is action
-                noAction = false;
+                // Set to false
+                NoAction = false;
 
-                 // Turn the button back on if canceled
-                ShowUploadButton = true;
-                
-                // set the action to Signup
-                action = "NewUserSignUp";
+                // Set Action
+                Action = "NewUserSignUp";
+
+                // update the UI
+                StateHasChanged();
             }
             #endregion
 
@@ -575,14 +739,14 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
-            #region BlueProgress
+            #region Children
             /// <summary>
-            /// This property gets or sets the value for 'BlueProgress'.
+            /// This property gets or sets the value for 'Children'.
             /// </summary>
-            public string BlueProgress
+            public List<IBlazorComponent> Children
             {
-                get { return blueProgress; }
-                set { blueProgress = value; }
+                get { return children; }
+                set { children = value; }
             }
             #endregion
             
@@ -636,6 +800,107 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region HasChildren
+            /// <summary>
+            /// This property returns true if this object has a 'Children'.
+            /// </summary>
+            public bool HasChildren
+            {
+                get
+                {
+                    // initial value
+                    bool hasChildren = (this.Children != null);
+                    
+                    // return value
+                    return hasChildren;
+                }
+            }
+            #endregion
+            
+            #region HasLoginResponse
+            /// <summary>
+            /// This property returns true if this object has a 'LoginResponse'.
+            /// </summary>
+            public bool HasLoginResponse
+            {
+                get
+                {
+                    // initial value
+                    bool hasLoginResponse = (this.LoginResponse != null);
+                    
+                    // return value
+                    return hasLoginResponse;
+                }
+            }
+            #endregion
+            
+            #region HasProgressBar
+            /// <summary>
+            /// This property returns true if this object has a 'ProgressBar'.
+            /// </summary>
+            public bool HasProgressBar
+            {
+                get
+                {
+                    // initial value
+                    bool hasProgressBar = (this.ProgressBar != null);
+                    
+                    // return value
+                    return hasProgressBar;
+                }
+            }
+            #endregion
+            
+            #region HasSignUp
+            /// <summary>
+            /// This property returns true if this object has a 'SignUp'.
+            /// </summary>
+            public bool HasSignUp
+            {
+                get
+                {
+                    // initial value
+                    bool hasSignUp = (this.SignUp != null);
+                    
+                    // return value
+                    return hasSignUp;
+                }
+            }
+            #endregion
+            
+            #region LoginComplete
+            /// <summary>
+            /// This property gets or sets the value for 'LoginComplete'.
+            /// </summary>
+            public bool LoginComplete
+            {
+                get { return loginComplete; }
+                set { loginComplete = value; }
+            }
+            #endregion
+            
+            #region LoginProcessed
+            /// <summary>
+            /// This property gets or sets the value for 'LoginProcessed'.
+            /// </summary>
+            public bool LoginProcessed
+            {
+                get { return loginProcessed; }
+                set { loginProcessed = value; }
+            }
+            #endregion
+            
+            #region LoginResponse
+            /// <summary>
+            /// This property gets or sets the value for 'LoginResponse'.
+            /// </summary>
+            public LoginResponse LoginResponse
+            {
+                get { return loginResponse; }
+                set { loginResponse = value; }
+            }
+            #endregion
+            
             #region Message
             /// <summary>
             /// This property gets or sets the value for 'Message'.
@@ -647,6 +912,18 @@ namespace BlazorImageGallery.Components
             }
             #endregion
          
+            #region Name
+            /// <summary>
+            /// This property gets or sets the value for 'Name'.
+            /// </summary>
+            [Parameter]
+            public string Name
+            {
+                get { return name; }
+                set { name = value; }
+            }
+            #endregion
+            
             #region NoAction
             /// <summary>
             /// This property gets or sets the value for 'NoAction'.
@@ -660,9 +937,21 @@ namespace BlazorImageGallery.Components
 
             #region OnLogin
             /// <summary>
-            /// This is the delegate to call after logging in
+            /// This is the EventCallback that is called after logging in
             /// </summary>
             [Parameter] public EventCallback<LoginResponse> OnLogin { get; set; }
+            #endregion
+            
+            #region Parent
+            /// <summary>
+            /// This property gets or sets the value for 'Parent'.
+            /// </summary>
+            [Parameter]
+            public IBlazorComponentParent Parent
+            {
+                get { return parent; }
+                set { parent = value; }
+            }
             #endregion
             
             #region Password
@@ -674,6 +963,14 @@ namespace BlazorImageGallery.Components
                 get { return password; }
                 set { password = value; }
             }
+            #endregion
+
+            #region Navigator
+            /// <summary>
+            /// This propery is injected so you can use NavigateTo
+            /// </summary>
+            [Inject]
+            NavigationManager Navigator { get; set; }
             #endregion
             
             #region ProfileImageStyle
@@ -695,6 +992,17 @@ namespace BlazorImageGallery.Components
             {
                 get { return profileImageUrl; }
                 set { profileImageUrl = value; }
+            }
+            #endregion
+            
+            #region ProgressBar
+            /// <summary>
+            /// This property gets or sets the value for 'Progress'.
+            /// </summary>
+            public ProgressBar ProgressBar
+            {
+                get { return progressBar; }
+                set { progressBar = value; }
             }
             #endregion
             
@@ -742,6 +1050,17 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region SignUp
+            /// <summary>
+            /// This property gets or sets the value for 'SignUp'.
+            /// </summary>
+            public SignUp SignUp
+            {
+                get { return signUp; }
+                set { signUp = value; }
+            }
+            #endregion
+            
             #region StoredPasswordHash
             /// <summary>
             /// This property gets or sets the value for 'StoredPasswordHash'.
@@ -752,7 +1071,7 @@ namespace BlazorImageGallery.Components
                 set { storedPasswordHash = value; }
             }
             #endregion
-            
+
         #endregion
         
     }

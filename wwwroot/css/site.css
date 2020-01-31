@@ -50,17 +50,52 @@
     transform: scale(0.5);
     transform-origin: left;    
 }
-.colorred
+.clear
 {
-    color: red;
+    clear: both;
 }
-.custom-file-upload
+.centerform
+{
+    position: fixed;
+    left: 20%;
+    top: 25%;
+    height: 50%;
+    width: 60%;
+    font-family: Verdana;
+    font-weight: 500;
+    color: black;
+}
+.centerform2
+{
+    position: fixed;
+    left: 35%;
+    top: 35%;
+    height: 50%;
+    width: 60%;
+    font-family: Verdana;
+    font-weight: 500;
+    color: black;
+}
+.customfileupload
 {  
     display: inline-block;
     cursor: pointer;
-    height:64px;
-    min-height: 64px;  
-    
+    height:48px;
+    min-height: 48px;
+    visibility: hidden;
+    display: none;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+}
+.hiddenfileupload
+{
+    display: none;
+    visibility: hidden;
+}
+.colorred
+{
+    color: red;
 }
 .developedbyme
 {
@@ -78,13 +113,6 @@
     font-size: 48px;
     color: White;
     text-align: Center;
-}
-.fontverdana20
-{
-    font-family: Verdana;
-    font-size: 20px;
-    color: white;
-    text-align: center;
 }
 .footer
 {
@@ -124,6 +152,14 @@
     height: 48px;
     min-height: 48px;
     max-height: 48px;
+    text-align: center;
+    vertical-align: central;
+}
+.height80
+{
+    height: 80px;
+    min-height: 80px;
+    max-height: 80px;
     text-align: center;
     vertical-align: central;
 }
@@ -180,6 +216,11 @@
 {
     position: relative;
     top: 16px;
+}
+.movedown64
+{
+    position: relative;
+    top: 64px;
 }
 .moveleft48
 {
@@ -254,13 +295,44 @@
 {
     height: 128px;
     width: 128px;
-    position: relative;
-    top: -80px;
+    position: fixed;
+    left: 35.6%;
+    top: 35.6%;
+}
+.progresscontainer
+{
+    position: fixed;
+    left: 35.6%;
+    top: 60.4%;
+}
+.progresscontainer2
+{
+    position: fixed;
+    left: 35%;
+    top: 53.2%;
 }
 .right12percent
 {
     position: relative;
     left: 12%;
+}
+.centerforminputfile
+{  
+    cursor: pointer;
+}
+.signupmessage
+{
+    position: fixed;
+    top: 80%;
+    left: 20%;
+    color: orange;
+}
+
+input[type=file], /* FF, IE7+, chrome (except button) */
+input[type=file]::-webkit-file-upload-button 
+{ /* chromes and blink button */
+    cursor: pointer;
+    display: none;
 }
 
 body 
@@ -272,10 +344,6 @@ body
     background-repeat: no-repeat;
     background-color: darkgray;
     overflow: hidden;
-}
-
-input[type="file"] {
-    display: none;
 }
 
 html{
