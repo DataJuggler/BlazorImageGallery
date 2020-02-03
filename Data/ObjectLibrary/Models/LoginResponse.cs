@@ -11,7 +11,7 @@ namespace ObjectLibrary.Models
 
     #region class LoginResponse
     /// <summary>
-    /// This class is used to return a Player if log in was successful, else a message
+    /// This class is used to return an Artist if log in is successful, else a message
     /// </summary>
     public class LoginResponse
     {

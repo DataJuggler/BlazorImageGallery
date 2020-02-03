@@ -10,10 +10,13 @@ using DataJuggler.UltimateHelper.Core;
 using Microsoft.AspNetCore.Components;
 using ObjectLibrary.BusinessObjects;
 using ObjectLibrary.Models;
+using BlazorImageGallery.Models;
 using System;
 using System.IO;
 using DataJuggler.Blazor.Components.Interfaces;
 using DataJuggler.Blazor.Components;
+using System.Threading.Tasks;
+using System.Threading;
 
 #endregion
 
@@ -41,9 +44,14 @@ namespace BlazorImageGallery.Components
         private bool showUploadButton;
         private bool showProfileMenu;
         private bool rememberLogin;
-        private ProgressBar progress;
+        private ProgressBar progressBar;
         private string name;
+        private bool signUpProcessed;
+        private bool signUpComplete;
         private IBlazorComponentParent parent;
+        private LoginResponse loginResponse;
+        private SignUpModel signUpModel;
+        private SignUpFinishedCallback signUpCallback;
         private const string NoProfileImagePath = "../images/avatars/NoProfileImage.png";
         #endregion
 
@@ -75,127 +83,20 @@ namespace BlazorImageGallery.Components
             /// <summary>
             /// This method creates a new user and saves itl
             /// </summary>
-            private async void HandleNewUserSignUp()
+            private void HandleNewUserSignUp()
             {
                 try
                 {
-                    // locals
-                    string passwordHash = "";
-                    bool abort = false;
-                    message = "";
+                    // if the value for HasProgressBar is true
+                    if (HasProgressBar)
+                    {  
+                        // Reset just in case this has been run previously
+                        SignUpProcessed = false;
+                        SignUpComplete = false;
 
-                    // create a new Artist
-                    this.Artist = new Artist();
-
-                    // get the key
-                    string key = EnvironmentVariableHelper.GetEnvironmentVariableValue("BlazorImageGallery");
-
-                    // if the key was found
-                    if (TextHelper.Exists(key))
-                    {
-                         // if the value for HasProgress is true
-                        if (HasProgress)
-                        {
-                            // Start the Progress
-                            Progress.Start();
-                        }
-
-                        // get the encryptedPassword
-                        passwordHash = CryptographyHelper.GeneratePasswordHash(password, key, 3);
-                    }
-
-                    // set the artistPath
-                    string artistPath = Path.Combine("Images/Gallery", displayName.Replace(" ", ""));
-
-                    // saves going to the database to lookup if the artist exists
-                    if (Directory.Exists(artistPath))
-                    {
-                        // abort due to artist already exists
-                        abort = true;
-
-                        // Set the message
-                        Message = "This artist already exists. Sign in if this is you.";
-                    }
-                    else
-                    {
-                        // create the artistFolder
-                        Directory.CreateDirectory(artistPath);
-                    }
-
-                    // if we should continue
-                    if (!abort)
-                    {
-                        // set the bound properties
-                        artist.EmailAddress = emailAddress;
-                        artist.PasswordHash = passwordHash;
-                        artist.CreatedDate = DateTime.Now;
-                        artist.Active = true;
-                        artist.Name = displayName;
-                        artist.CreatedDate = DateTime.Now;
-                        artist.LastUpdated = DateTime.Now;
-                        artist.FolderPath = artistPath;
-                        artist.ProfilePicture = ProfileImageUrl;
-                        artist.Active = true;
-
-                        // Validate this player
-                        bool isValid = ValidateArtist();
-
-                        // if isValid
-                        if (isValid)
-                        { 
-                            // perform the save
-                            bool saved = await ArtistService.SaveArtist(ref artist);
-
-                            // if saved
-                            if (saved)
-                            {
-                                // Get the loginResponse
-                                LoginResponse loginResponse = await ArtistService.Login(emailAddress, password, false);
-
-                                // if the loginResponse exists
-                                if (NullHelper.Exists(loginResponse))
-                                {
-                                    // Stop the Progress (and hide) -- isn't working
-                                    Progress.Stop();
-
-                                    // set the player
-                                    artist = loginResponse.Artist;
-
-                                    // if the value for HasParent is true
-                                    if (HasParent)
-                                    {
-                                        // Send Data to the parent
-                                        
-                                        // Create a message to send to the parent
-                                        Message message = new Message();
-
-                                        // Set the Text
-                                        message.Text = "New Artist Signed Up";
-
-                                        // Create a new instance of a 'NamedParameter' object.
-                                        NamedParameter namedParameter = new NamedParameter();
-
-                                        // Set the NamedParameter
-                                        namedParameter.Name = "New Artist";
-                                        namedParameter.Value = artist;
-
-                                        // Add this parameter
-                                        message.Parameters.Add(namedParameter);
-
-                                        // Send the data to the parent
-                                        Parent.ReceiveData(message);
-                                    }
-                                }
-                            }
-
-                            // Refresh
-                            StateHasChanged();
-                        }
-                        else
-                        {
-                            abort = true;
-                        }
-                    }
+                        // Start the Progressbar timer
+                        this.ProgressBar.Start();
+                    }                                     
                 }
                 catch (Exception error)
                 {
@@ -207,12 +108,7 @@ namespace BlazorImageGallery.Components
                 }
                 finally
                 {
-                    // if the value for HasProgress is true
-                    if (HasProgress)
-                    {
-                        // turn off progress
-                        Progress.Stop();
-                    }
+
                 }
             }
             #endregion
@@ -277,6 +173,130 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region OnSignUpComplete(LoginResponse loginResponse)
+            /// <summary>
+            /// This method receieves the response from the login executed in another thread
+            /// </summary>
+            /// <param name="loginResponse"></param>
+            public void OnSignUpComplete(LoginResponse loginResponse)
+            {
+                // If the loginResponse object exists
+                if (NullHelper.Exists(loginResponse))
+                {
+                    // if the loginResponse exists
+                    if ((NullHelper.Exists(loginResponse)) && (loginResponse.Success))
+                    {
+                        // Store the LoginResponse
+                        LoginResponse = loginResponse;
+
+                        // We can't call the event call back from this thread
+                        SignUpComplete = true;                        
+                    }
+
+                    // Refresh the UI
+                    Refresh();
+                }
+            }
+            #endregion
+
+            #region ProcessNewUserSignUp(SignUpModel signUpObject)
+            /// <summary>
+            /// This method Process New User Sign Up
+            /// </summary>
+            public async void ProcessNewUserSignUp(object signUpObject)
+            {
+                // cast the object as a signUpModel object
+                this.SignUpModel = signUpObject as SignUpModel;
+
+                // if the value for HasSignUpModel is true
+                if (HasSignUpModel)
+                {
+                    // locals
+                    string passwordHash = "";
+                    bool abort = false;
+                    message = "";
+
+                    // create a new Artist
+                    this.Artist = new Artist();
+
+                    // get the key
+                    string key = EnvironmentVariableHelper.GetEnvironmentVariableValue("BlazorImageGallery");
+
+                    // if the key was found
+                    if (TextHelper.Exists(key, password))
+                    {
+                        // get the encryptedPassword
+                        passwordHash = CryptographyHelper.GeneratePasswordHash(password, key, 3);
+                    }
+
+                    // set the artistPath
+                    string artistPath = Path.Combine("Images/Gallery", displayName.Replace(" ", ""));
+
+                    // saves going to the database to lookup if the artist exists
+                    if (Directory.Exists(artistPath))
+                    {
+                        // abort due to artist already exists
+                        abort = true;
+
+                        // Set the message
+                        Message = "This artist already exists. Sign in if this is you.";
+
+                        // if the value for HasProgressBar is true
+                        if (HasProgressBar)
+                        {
+                            // Stop and hide
+                            ProgressBar.Stop();
+                        }
+                    }
+                    else
+                    {
+                        // create the artistFolder
+                        Directory.CreateDirectory(artistPath);
+                    }
+
+                    // if we should continue
+                    if (!abort)
+                    {
+                        // set the bound properties
+                        artist.EmailAddress = signUpModel.EmailAddress;
+                        artist.PasswordHash = passwordHash;
+                        artist.CreatedDate = DateTime.Now;
+                        artist.Active = true;
+                        artist.Name = signUpModel.DisplayName;
+                        artist.CreatedDate = DateTime.Now;
+                        artist.LastUpdated = DateTime.Now;
+                        artist.FolderPath = artistPath;
+                        artist.ProfilePicture = signUpModel.ProfilePictureUrl;
+                        artist.Active = true;
+
+                        // Validate this artist
+                        bool isValid = ValidateArtist();
+
+                        // if isValid
+                        if (isValid)
+                        { 
+                            // perform the save
+                            bool saved = await ArtistService.SaveArtist(ref artist);
+
+                            // if saved
+                            if (saved)
+                            {
+                                // Get the loginResponse
+                                this.LoginResponse = await ArtistService.Login(artist.EmailAddress, artist.PasswordHash, true);
+
+                                // The SignUp is complete
+                                SignUpComplete = true;
+                            }
+                        }
+                        else
+                        {
+                            abort = true;
+                        }
+                    }
+                }
+            }
+            #endregion
+            
             #region ReceiveData(Message message)
             /// <summary>
             /// This method Receive Data
@@ -293,7 +313,63 @@ namespace BlazorImageGallery.Components
             /// </summary>
             public void Refresh(string message)
             {
-               // Update the UI
+                try
+                {
+                    // If the LoginProcessed
+                    if (!SignUpProcessed)
+                    {
+                        // Create a new instance of a 'SignUpModel' object.
+                        SignUpModel signUpModel = new SignUpModel();
+
+                        // Set the properties on the SignUpModel
+                        signUpModel.DisplayName = DisplayName;
+                        signUpModel.EmailAddress = EmailAddress;
+                        signUpModel.Password = Password;
+                        signUpModel.ProfilePictureUrl = ProfileImageUrl;
+                        signUpModel.SignUpFinishedCallback = OnSignUpComplete;
+
+                        // Create a Thread to Process the Signup
+                        Thread thread = new Thread(ProcessNewUserSignUp);
+
+                        // Set the value for the property 'IsBackground' to true                        
+                        thread.IsBackground = true;
+
+                        // Startup the thread and pass in the SignUp model
+                        thread.Start(signUpModel);
+                    
+                        // Process the login
+                        SignUpProcessed = true;
+                    }
+
+                    // if the SignUp has finished
+                    if ((SignUpComplete) && (HasProgressBar))
+                    {  
+                        // Stop the ProgressBar
+                        ProgressBar.Stop();
+
+                        // if the loginResponse exists
+                        if (HasLoginResponse)
+                        {
+                            // Notify the Login page that we have logged in a user
+                            SignUpCallback(LoginResponse);
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    // For debugging only
+                    DebugHelper.WriteDebugError("Refresh", "SignUp.razor.cs", error);
+                }
+            }
+            #endregion
+
+            #region Refresh()
+            /// <summary>
+            /// This method is called by a Sprite when as it refreshes.
+            /// </summary>
+            public void Refresh()
+            {
+                // Update the UI
                 InvokeAsync(() =>
                 {
                     StateHasChanged();
@@ -307,8 +383,8 @@ namespace BlazorImageGallery.Components
             /// </summary>
             public void Register(ProgressBar progressBar)
             {
-                // Store the Progress
-                Progress = progressBar;
+                // Store the ProgressBar
+                this.ProgressBar = progressBar;
             }
             #endregion
             
@@ -322,7 +398,7 @@ namespace BlazorImageGallery.Components
                 // initial value
                 bool isValid = false;
                 
-                // if the player exists
+                // if the artist exists
                 if (NullHelper.Exists(artist))
                 {
                     // if the emailAddress and DisplayName
@@ -456,6 +532,40 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region HasLoginResponse
+            /// <summary>
+            /// This property returns true if this object has a 'LoginResponse'.
+            /// </summary>
+            public bool HasLoginResponse
+            {
+                get
+                {
+                    // initial value
+                    bool hasLoginResponse = (this.LoginResponse != null);
+                    
+                    // return value
+                    return hasLoginResponse;
+                }
+            }
+            #endregion
+            
+            #region HasMessage
+            /// <summary>
+            /// This property returns true if this object has a 'Message'.
+            /// </summary>
+            public bool HasMessage
+            {
+                get
+                {
+                    // initial value
+                    bool hasMessage = (this.Message != null);
+                    
+                    // return value
+                    return hasMessage;
+                }
+            }
+            #endregion
+            
             #region HasParent
             /// <summary>
             /// This property returns true if this object has a 'Parent'.
@@ -473,20 +583,65 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
-            #region HasProgress
+            #region HasProgressBar
             /// <summary>
-            /// This property returns true if this object has a 'Progress'.
+            /// This property returns true if this object has a 'ProgressBar'.
             /// </summary>
-            public bool HasProgress
+            public bool HasProgressBar
             {
                 get
                 {
                     // initial value
-                    bool hasProgress = (this.Progress != null);
+                    bool hasProgressBar = (this.ProgressBar != null);
                     
                     // return value
-                    return hasProgress;
+                    return hasProgressBar;
                 }
+            }
+            #endregion
+            
+            #region HasSignUpCallback
+            /// <summary>
+            /// This property returns true if this object has a 'SignUpCallback'.
+            /// </summary>
+            public bool HasSignUpCallback
+            {
+                get
+                {
+                    // initial value
+                    bool hasSignUpCallback = (this.SignUpCallback != null);
+                    
+                    // return value
+                    return hasSignUpCallback;
+                }
+            }
+            #endregion
+            
+            #region HasSignUpModel
+            /// <summary>
+            /// This property returns true if this object has a 'SignUpModel'.
+            /// </summary>
+            public bool HasSignUpModel
+            {
+                get
+                {
+                    // initial value
+                    bool hasSignUpModel = (this.SignUpModel != null);
+                    
+                    // return value
+                    return hasSignUpModel;
+                }
+            }
+            #endregion
+            
+            #region LoginResponse
+            /// <summary>
+            /// This property gets or sets the value for 'LoginResponse'.
+            /// </summary>
+            public LoginResponse LoginResponse
+            {
+                get { return loginResponse; }
+                set { loginResponse = value; }
             }
             #endregion
             
@@ -580,14 +735,14 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
-            #region Progress
+            #region ProgressBar
             /// <summary>
             /// This property gets or sets the value for 'ProgressBar'.
             /// </summary>
-            public ProgressBar Progress
+            public ProgressBar ProgressBar
             {
-                get { return progress; }
-                set { progress = value; }
+                get { return progressBar; }
+                set { progressBar = value; }
             }
             #endregion
             
@@ -622,9 +777,51 @@ namespace BlazorImageGallery.Components
                 get { return showUploadButton; }
                 set { showUploadButton = value; }
             }
+            #endregion
 
-        public ProgressBar ProgressBar { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        #endregion
+            #region SignUpCallback
+            /// <summary>
+            /// This property gets or sets the value for 'SignUpCallback'.
+            /// </summary>
+            public SignUpFinishedCallback SignUpCallback
+            {
+                get { return signUpCallback; }
+                set { signUpCallback = value; }
+            }
+            #endregion
+            
+            #region SignUpComplete
+            /// <summary>
+            /// This property gets or sets the value for 'SignUpComplete'.
+            /// </summary>
+            public bool SignUpComplete
+            {
+                get { return signUpComplete; }
+                set { signUpComplete = value; }
+            }
+            #endregion
+
+            #region SignUpModel
+            /// <summary>
+            /// This property gets or sets the value for 'SignUpModel'.
+            /// </summary>
+            public SignUpModel SignUpModel
+            {
+                get { return signUpModel; }
+                set { signUpModel = value; }
+            }
+            #endregion
+            
+            #region SignUpProcessed
+            /// <summary>
+            /// This property gets or sets the value for 'SignUpProcessed'.
+            /// </summary>
+            public bool SignUpProcessed
+            {
+                get { return signUpProcessed; }
+                set { signUpProcessed = value; }
+            }
+            #endregion
 
         #endregion
 

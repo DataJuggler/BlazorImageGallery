@@ -76,7 +76,7 @@ namespace DataGateway.Services
                     // load the sites
                     artist = gateway.FindArtistByEmailAddress(emailAddress);
 
-                    // if the player exists
+                    // if the artist exists
                     if (NullHelper.Exists(artist))
                     {
                         // get the key
@@ -85,7 +85,7 @@ namespace DataGateway.Services
                         // if the key was found
                         if (TextHelper.Exists(key))
                         {
-                            // can this player be verified
+                            // can this artist be verified
                             bool isVerified = CryptographyHelper.VerifyHash(password, key, artist.PasswordHash, passwordIsHashed);
                             
                             // if the password hashes match
@@ -94,7 +94,7 @@ namespace DataGateway.Services
                                 // The user did login
                                 loginResponse.Success = true;
 
-                                // Set the Player
+                                // Set the artist
                                 loginResponse.Artist = artist;
                             }
                             else

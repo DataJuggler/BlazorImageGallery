@@ -51,7 +51,6 @@ namespace BlazorImageGallery.Components
         private IBlazorComponentParent parent;
         private List<IBlazorComponent> children;
         private string name;
-
         private LoginResponse loginResponse;
         private const string NoProfileImagePath = "../images/avatars/NoProfileImage.png";
         #endregion
@@ -215,8 +214,6 @@ namespace BlazorImageGallery.Components
                     // if the value for HasLoginResponse is true
                     if (HasLoginResponse)
                     {
-                       
-
                         // set the Artist
                         artist = LoginResponse.Artist;
 
@@ -317,21 +314,63 @@ namespace BlazorImageGallery.Components
             /// <param name="loginResponse"></param>
             public void OnLoginComplete(LoginResponse loginResponse)
             {
-                // If the loginResponse object exists
-                if (NullHelper.Exists(loginResponse, ProgressBar))
+                try
                 {
-                    // if the loginResponse exists
-                    if ((NullHelper.Exists(loginResponse)) && (loginResponse.Success))
+                    // If the loginResponse object exists
+                    if (NullHelper.Exists(loginResponse, ProgressBar))
                     {
-                        // Store the LoginResponse
-                        LoginResponse = loginResponse;
+                        // if the loginResponse exists
+                        if ((NullHelper.Exists(loginResponse)) && (loginResponse.Success))
+                        {
+                            // Store the LoginResponse
+                            LoginResponse = loginResponse;
 
-                        // We can't call the event call back from this thread
-                        LoginComplete = true;                        
+                            // We can't call the event call back from this thread
+                            LoginComplete = true;                        
+                        }
+
+                        // Refresh the UI
+                        Refresh();
                     }
+                }
+                catch (Exception error)
+                {
+                    // for debugging only 
+                    DebugHelper.WriteDebugError("OnLoginComplete", "Login.razor.cs", error);
+                }
+            }
+            #endregion
 
-                    // Refresh the UI
-                    Refresh();
+            #region OnSignUpComplete(LoginResponse loginResponse)
+            /// <summary>
+            /// This method receieves the response from the SignUp control
+            /// </summary>
+            /// <param name="loginResponse"></param>
+            public void OnSignUpComplete(LoginResponse loginResponse)
+            {
+                try
+                {
+                    // If the loginResponse object exists
+                    if (NullHelper.Exists(loginResponse))
+                    {
+                        // if the loginResponse exists
+                        if ((NullHelper.Exists(loginResponse)) && (loginResponse.Success))
+                        {
+                            // Store the LoginResponse
+                            LoginResponse = loginResponse;
+
+                            // Notify the IndexPage
+                            NotifyIndexPage();
+                        }
+
+                        // Refresh the UI
+                        Refresh();
+                    }
+                }
+                catch (Exception error)
+                {
+                    // for debugging only 
+                    DebugHelper.WriteDebugError("OnLoginComplete", "Login.razor.cs", error);
                 }
             }
             #endregion
@@ -469,12 +508,6 @@ namespace BlazorImageGallery.Components
                         // Notify the Index page
                         NotifyIndexPage();
                     }
-
-                    // Update the UI
-                    InvokeAsync(() =>
-                    {
-                        StateHasChanged();
-                    });
                 }
                 catch (Exception error)
                 {
@@ -512,6 +545,9 @@ namespace BlazorImageGallery.Components
                     {
                         // Set the Signup control
                         this.SignUp = component as SignUp;
+
+                        // Setup the delegate to call
+                        this.SignUp.SignUpCallback = OnSignUpComplete;
                     }
 
                     // add this child
@@ -638,7 +674,7 @@ namespace BlazorImageGallery.Components
                 // initial value
                 bool isValid = false;
                 
-                // if the player exists
+                // if the artist exists
                 if (NullHelper.Exists(artist))
                 {
                     // if the emailAddress and DisplayName
