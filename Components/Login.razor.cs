@@ -76,6 +76,19 @@ namespace BlazorImageGallery.Components
                 action = "";
                 noAction = true;
                 OnReset("FromCancel");
+
+                // if the Parent exists
+                if (HasParent)
+                {
+                    // Create a message
+                    Message message = new Message();
+
+                    // Send a clear message
+                    message.Text = "";
+
+                    // Send a message
+                    Parent.ReceiveData(message);
+                }
                 
                 // Update the UI
                 StateHasChanged();
@@ -320,13 +333,42 @@ namespace BlazorImageGallery.Components
                     if (NullHelper.Exists(loginResponse, ProgressBar))
                     {
                         // if the loginResponse exists
-                        if ((NullHelper.Exists(loginResponse)) && (loginResponse.Success))
+                        if (NullHelper.Exists(loginResponse))
                         {
-                            // Store the LoginResponse
-                            LoginResponse = loginResponse;
+                            // if success
+                            if (loginResponse.Success)
+                            {
+                                // Clear the Message
+                                this.Message = "";
 
-                            // We can't call the event call back from this thread
-                            LoginComplete = true;                        
+                                // Store the LoginResponse
+                                LoginResponse = loginResponse;
+
+                                // We can't call the event call back from this thread
+                                LoginComplete = true;      
+                            }
+                            else
+                            {
+                                // if the ProgressBar exists
+                                if (HasProgressBar)
+                                {
+                                    // Stop the ProgressBar
+                                    ProgressBar.Stop();
+                                }
+
+                                // if the Parent exists
+                                if (HasParent)
+                                {
+                                    // create a message to send
+                                    Message message = new Message();
+
+                                    // Set the text
+                                    message.Text = loginResponse.Message;
+
+                                    // Send a message to the parent
+                                    Parent.ReceiveData(message);;
+                                }
+                            }
                         }
 
                         // Refresh the UI
@@ -491,6 +533,19 @@ namespace BlazorImageGallery.Components
                         Thread thread = new Thread(ProcessLogin);
                         thread.IsBackground = true;
                         thread.Start(loginModel);
+
+                        // if the Parent exists
+                        if (HasParent)
+                        {
+                            // create a message to send to the parent before this control starts 
+                            Message messageToSend = new Message();
+
+                            // Clear any text
+                            messageToSend.Text = "";
+
+                            // Send a message to the parent to clear any messages being shown (if any)
+                            Parent.ReceiveData(messageToSend);
+                        }
                     
                         // Process the login
                         LoginProcessed = true;
@@ -870,6 +925,23 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region HasParent
+            /// <summary>
+            /// This property returns true if this object has a 'Parent'.
+            /// </summary>
+            public bool HasParent
+            {
+                get
+                {
+                    // initial value
+                    bool hasParent = (this.Parent != null);
+                    
+                    // return value
+                    return hasParent;
+                }
+            }
+            #endregion
+            
             #region HasProgressBar
             /// <summary>
             /// This property returns true if this object has a 'ProgressBar'.
@@ -986,7 +1058,18 @@ namespace BlazorImageGallery.Components
             public IBlazorComponentParent Parent
             {
                 get { return parent; }
-                set { parent = value; }
+                set 
+                { 
+                    // set the parent
+                    parent = value;
+
+                    // if the value for HasParent is true
+                    if (HasParent)
+                    {
+                        // Register with the parent to receive messages from the parent
+                        Parent.Register(this);
+                    }
+                }
             }
             #endregion
             
@@ -1049,7 +1132,20 @@ namespace BlazorImageGallery.Components
             public bool RememberLogin
             {
                 get { return rememberLogin; }
-                set { rememberLogin = value; }
+                set 
+                { 
+                    rememberLogin = value;
+
+                    // if false
+                    if (!rememberLogin)
+                    {
+                        // Erase the value
+                        StoredPasswordHash = "";
+
+                        // Remove the local stored password values
+                        RemovedLocalStoreItems();
+                    }
+                }
             }
             #endregion
             

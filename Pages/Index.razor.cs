@@ -36,6 +36,7 @@ namespace BlazorImageGallery.Pages
         private List<IBlazorComponent> children;
         private Login login;
         private string passwordHash;
+        private string message;
         #endregion
 
         #region Constructor
@@ -134,6 +135,9 @@ namespace BlazorImageGallery.Pages
                     // if the login was successful
                     if (loginResponse.Success)
                     {  
+                        // Erase any messages
+                        this.Message = "";
+
                         // Set the artist
                         this.Artist = loginResponse.Artist;
 
@@ -208,6 +212,14 @@ namespace BlazorImageGallery.Pages
                             }
                         }
                     }
+                    else
+                    {
+                        // Set the message text
+                        this.Message = message.Text;
+
+                        // Update the UI
+                        Refresh();
+                    }
                 }
             }
             #endregion
@@ -235,7 +247,7 @@ namespace BlazorImageGallery.Pages
                 // If the component object exists
                 if (NullHelper.Exists(component, Children))
                 {
-                    // If this is the SignUp component
+                    // If this is the Login component
                     if (component.Name == "Login")
                     {
                         // Set the Signup control
@@ -339,6 +351,17 @@ namespace BlazorImageGallery.Pages
             {
                 get { return login; }
                 set { login = value; }
+            }
+            #endregion
+            
+            #region Message
+            /// <summary>
+            /// This property gets or sets the value for 'Message'.
+            /// </summary>
+            public string Message
+            {
+                get { return message; }
+                set { message = value; }
             }
             #endregion
             

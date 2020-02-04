@@ -138,7 +138,7 @@
     border: none;
     position: fixed;
     left: 90.0%;
-    top: 1%;
+    top: 0%;
     width: 64px;
     height: 64px;
     margin-left: 8px;
@@ -171,7 +171,7 @@
 {
     position: relative;
     left: 88%;
-    top: 8px;
+    top: 0px;
     color: white;
 }
 .marginbottom8
@@ -201,6 +201,15 @@
 .margintopnegative64
 {
     margin-top: -64px;
+}
+.message
+{
+    position: fixed;
+    left: 35%;
+    top: 60%;
+    color: darkred;
+    font-family: Verdana;
+    font-size: 12px;
 }
 .movedown4
 {

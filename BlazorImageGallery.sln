@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGateway", "Data\DataGat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObjectLibrary", "Data\ObjectLibrary\ObjectLibrary.csproj", "{B3FB2776-B871-4FC2-8CCB-E135A10F9B63}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataJuggler.Blazor.Components", "..\..\DataJuggler.Blazor.Components\DataJuggler.Blazor.Components.csproj", "{19922E6C-266E-4AE6-8035-7D8D8F2A3D4E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{B3FB2776-B871-4FC2-8CCB-E135A10F9B63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3FB2776-B871-4FC2-8CCB-E135A10F9B63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FB2776-B871-4FC2-8CCB-E135A10F9B63}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19922E6C-266E-4AE6-8035-7D8D8F2A3D4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19922E6C-266E-4AE6-8035-7D8D8F2A3D4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19922E6C-266E-4AE6-8035-7D8D8F2A3D4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19922E6C-266E-4AE6-8035-7D8D8F2A3D4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorStyled" Version="1.2.0" />
+    <PackageReference Include="DataJuggler.Blazor.Components" Version="1.1.1" />
     <PackageReference Include="DataJuggler.Blazor.FileUpload" Version="1.3.0" />
     <PackageReference Include="DataJuggler.Core.Cryptography" Version="1.0.11" />
     <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.0" />
@@ -30,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DataJuggler.Blazor.Components\DataJuggler.Blazor.Components.csproj" />
     <ProjectReference Include="Data\DataGateway\DataGateway.csproj" />
     <ProjectReference Include="Data\ObjectLibrary\ObjectLibrary.csproj" />
   </ItemGroup>
