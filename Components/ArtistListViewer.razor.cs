@@ -29,8 +29,21 @@ namespace BlazorImageGallery.Components
         private string artistStyle3;
         private string artistStyle4;
         private string artistStyle5;
-        public const int ArtistsPerPage = 5;
         private int pageIndex;
+        private bool showPrevButton;
+        private bool showNextButton;
+        public const int ArtistsPerPage = 5;        
+        #endregion
+
+        #region ArtistListViewer()
+        /// <summary>
+        /// Create a new instance of an ArtistListViewer object
+        /// </summary>
+        public ArtistListViewer()
+        {
+            // Perform initializations for this object
+            Init();
+        }
         #endregion
 
         #region Methods
@@ -71,6 +84,38 @@ namespace BlazorImageGallery.Components
                 
                 // return value
                 return totalPages;
+            }
+            #endregion
+            
+            #region Init()
+            /// <summary>
+            /// This method performs initializations for this object.
+            /// </summary>
+            public void Init()
+            {
+                
+            }
+            #endregion
+
+            #region NextButton_Click()
+            /// <summary>
+            /// This method Next Button _ Click
+            /// </summary>
+            public void NextButton_Click()
+            {
+               // Increment the value for PageIndex
+               PageIndex++;
+            }
+            #endregion
+
+            #region PrevButton_Click()
+            /// <summary>
+            /// This method Prev Button _ Click
+            /// </summary>
+            public void PrevButton_Click()
+            {
+                // Decrement the value for PageIndex
+                PageIndex--;
             }
             #endregion
             
@@ -738,8 +783,50 @@ namespace BlazorImageGallery.Components
             {
                 get
                 {
+                    // locals
+                    int min = 0;
+                    int max = 0;
+                    int total = 0;
+
+                    // set the value
+                    int totalPages = TotalPages;
+
+                    // if we have more than one page
+                    if (totalPages > 1)
+                    {
+                        // Show the PrevButton if we are not on the first page
+                        ShowPrevButton = (PageNumber > 1);
+
+                        // Show the NextButton if not on the last page
+                        ShowNextButton = (PageNumber < totalPages);
+                    }
+                    else
+                    {   
+                        // if Prev or Next
+                        ShowPrevButton = false;
+                        ShowNextButton = false;
+                    }
+                    
+                    // If have to use the GalleryManager.Artists, because the local Artists collection is only the current 5.
+
+                    // If the Artists collection exists and has one or more items
+                    if ((NullHelper.Exists(GalleryManager)) && (ListHelper.HasOneOrMoreItems(GalleryManager.Artists)))
+                    {
+                        // Set the min display value
+                        min = ((PageIndex * 5) + 1);
+                        max = min + 4;
+                        total = GalleryManager.Artists.Count;
+
+                        // if out of range
+                        if (max > GalleryManager.Artists.Count)
+                        {
+                            // Set the value for Max
+                            max = GalleryManager.Artists.Count;
+                        }
+                    }
+
                     // initial value
-                    string displayText = PageNumber + " of " + TotalPages;
+                    string displayText = "Viewing " + min.ToString() + " - " + max.ToString() + " of " + total.ToString();
 
                     // return value
                     return displayText;
@@ -788,6 +875,28 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region ShowNextButton
+            /// <summary>
+            /// This property gets or sets the value for 'ShowNextButton'.
+            /// </summary>
+            public bool ShowNextButton
+            {
+                get { return showNextButton; }
+                set { showNextButton = value; }
+            }
+            #endregion
+            
+            #region ShowPrevButton
+            /// <summary>
+            /// This property gets or sets the value for 'ShowPrevButton'.
+            /// </summary>
+            public bool ShowPrevButton
+            {
+                get { return showPrevButton; }
+                set { showPrevButton = value; }
+            }
+            #endregion
+            
             #region TotalPages
             /// <summary>
             /// This read only property returns the value for 'TotalPages'.
@@ -803,7 +912,7 @@ namespace BlazorImageGallery.Components
                     if (HasArtists)
                     {
                         // get the total Pages
-                        totalPages = GetTotalPages();
+                        totalPages = GetTotalPages();                        
                     }
 
                     // return value 

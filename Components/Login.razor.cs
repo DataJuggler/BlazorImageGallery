@@ -63,9 +63,9 @@ namespace BlazorImageGallery.Components
         {
         }
         #endregion
-        
+
         #region Methods
-            
+
             #region Cancel()
             /// <summary>
             /// method Cancel

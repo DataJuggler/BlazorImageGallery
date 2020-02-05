@@ -9,7 +9,7 @@
 <Styled @bind-Classname="@ArtistStyle1">
     background-image: url('@Artist1ProfilePictureUrl');    
     position: fixed;
-    top: 74%;
+    top: 74.6%;
     left: 16%;
     width: 256px;
     height: 256px;
@@ -20,7 +20,7 @@
 <Styled @bind-Classname="@ArtistStyle2">
     background-image: url('@Artist2ProfilePictureUrl');    
     position: fixed;
-    top: 74%;
+    top: 74.6%;
     left: 28%;
     width: 256px;
     height: 256px;
@@ -31,7 +31,7 @@
 <Styled @bind-Classname="@ArtistStyle3">
     background-image: url('@Artist3ProfilePictureUrl');    
     position: fixed;
-    top: 74%;
+    top: 74.6%;
     left: 40%;
     width: 256px;
     height: 256px;
@@ -42,7 +42,7 @@
 <Styled @bind-Classname="@ArtistStyle4">
     background-image: url('@Artist4ProfilePictureUrl');    
     position: fixed;
-    top: 74%;
+    top: 74.6%;
     left: 52%;
     width: 256px;
     height: 256px;
@@ -53,7 +53,7 @@
 <Styled @bind-Classname="@ArtistStyle5">
     background-image: url('@Artist5ProfilePictureUrl');    
     position: fixed;
-    top: 74%;
+    top: 74.6%;
     left: 64%;
     width: 256px;
     height: 256px;
@@ -61,6 +61,13 @@
     transform-origin: left;   
     border: 2px solid black;
 </Styled>
+
+<div class="prevbuttoncontainer">
+    @if (ShowPrevButton)
+    {
+        <button class="prevbutton" @onclick="PrevButton_Click"></button>
+    }
+</div>
 
 @if (HasArtist1)
 {  
@@ -82,4 +89,11 @@
 {  
     <button class="@ArtistStyle5"><span class="text-white text-center fontarial48 moveup160">@Artist5Name</span></button>
 }
+
+<div class="nextbuttoncontainer">
+    @if (ShowNextButton)
+    {
+        <button class="nextbutton" @onclick="NextButton_Click"></button>
+    }
+</div>
 

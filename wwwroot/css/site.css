@@ -291,9 +291,57 @@
     position: relative;
     top: -160px;
 }
+.nextbutton 
+{
+    display: inline-block;
+    border: none;
+    width: 52px;
+    height: 64px;
+    background-image: url('../images/buttons/bluearrowright.png');
+    background-color: transparent;
+    transform: scale(0.75);
+    transform-origin: left;
+}
+.nextbutton:focus 
+{
+  outline: none;
+}
+.nextbuttoncontainer
+{
+    position: fixed;
+    left: 69.8%;
+    bottom: 4.5%;
+    width: 39px;
+    height: 48px;
+    background-color: transparent;
+}
 .nodisplay
 {
     display: none;
+}
+.prevbutton 
+{
+    display: inline-block;
+    border: none;
+    width: 52px;
+    height: 64px;
+    background-image: url('../images/buttons/bluearrowleft.png');
+    background-color: transparent;
+    transform: scale(0.75);
+    transform-origin: left;
+}
+.prevbutton:focus 
+{
+  outline: none;
+}
+.prevbuttoncontainer
+{
+    position: fixed;
+    left: 12.4%;
+    bottom: 4.5%;
+    width: 39px;
+    height: 48px;
+    background-color: transparent;
 }
 .profilepicture
 {
