@@ -32,6 +32,8 @@ namespace BlazorImageGallery.Components
         private int pageIndex;
         private bool showPrevButton;
         private bool showNextButton;
+        private string selectedArtistStyle;
+        private string selectedArtistLeft;
         public const int ArtistsPerPage = 5;        
         #endregion
 
@@ -93,10 +95,63 @@ namespace BlazorImageGallery.Components
             /// </summary>
             public void Init()
             {
-                
+                // haven't thought of any yet
             }
             #endregion
 
+            #region IsArtistSelected(int positionNumber)
+            /// <summary>
+            /// This method returns the Artist Selected
+            /// </summary>
+            public bool IsArtistSelected(int positionNumber)
+            {
+                // initial value
+                bool isArtistSelected = false;
+                
+                 // are we in a Gallery
+                if (HasSelectedArtist)
+                {
+                    // find the position of the SelectedArtist
+                    int position = GalleryManager.FindPosition(SelectedArtist.Id);
+
+                    // Set the return value
+                    isArtistSelected = (position == positionNumber);
+                }
+                
+                // return value
+                return isArtistSelected;
+            }
+            #endregion
+            
+            #region IsArtistVisible(int positionNumber)
+            /// <summary>
+            /// This method returns the Artist Visible
+            /// </summary>
+            public bool IsArtistVisible(int positionNumber)
+            {
+                // initial value
+                bool isArtistVisible = false;
+
+                // are we in a Gallery
+                if (HasSelectedArtist)
+                {
+                    // find the position of the SelectedArtist
+                    int position = GalleryManager.FindPosition(SelectedArtist.Id);
+
+                    // Set the return value
+                    isArtistVisible = (position == positionNumber);
+                }
+                else
+                {
+                    // Show the artist
+                    isArtistVisible = true;
+                }
+
+                // return value
+                return isArtistVisible;
+            }
+            #endregion
+            
             #region NextButton_Click()
             /// <summary>
             /// This method Next Button _ Click
@@ -116,6 +171,245 @@ namespace BlazorImageGallery.Components
             {
                 // Decrement the value for PageIndex
                 PageIndex--;
+            }
+            #endregion
+            
+            #region SelectArtist1()
+            /// <summary>
+            /// This method Selects Artist 1
+            /// </summary>
+            public void SelectArtist1()
+            {
+                // local
+                bool abort = false;
+
+                // if the value for HasGalleryManager is true
+                if (HasGalleryManager)
+                {
+                    // if we have a SelectedArtist
+                    if (GalleryManager.HasSelectedArtist)
+                    {
+                        // find the position
+                        int position = GalleryManager.FindPosition(GalleryManager.SelectedArtist.Id);
+
+                        // if position is 1
+                        if (position == 1)
+                        {
+                            // set abort to true
+                            abort = true;
+
+                            // destroy the SelectedArtist
+                            GalleryManager.SelectedArtist = null;
+                        }
+                    }
+
+                    // if we should continue setting the SelectedArtist
+                    if (!abort)
+                    {
+                        // Set the SelectedArtist
+                        GalleryManager.SetSelectedArtist(1, PageIndex);
+
+                        // Set the SelectedLeft
+                        SetSelectedArtistLeft(1);
+                    }
+
+                    // Update the UI
+                    StateHasChanged();
+                }
+            }
+            #endregion
+
+            #region SelectArtist2()
+            /// <summary>
+            /// This method Selects Artist 2
+            /// </summary>
+            public void SelectArtist2()
+            {
+                // local
+                bool abort = false;
+
+                // if the value for HasGalleryManager is true
+                if (HasGalleryManager)
+                {
+                    // if we have a SelectedArtist
+                    if (GalleryManager.HasSelectedArtist)
+                    {
+                        // find the position
+                        int position = GalleryManager.FindPosition(GalleryManager.SelectedArtist.Id);
+
+                        // if position is 2
+                        if (position == 2)
+                        {
+                            // set abort to true
+                            abort = true;
+
+                            // destroy the SelectedArtist
+                            GalleryManager.SelectedArtist = null;
+                        }
+                    }
+
+                    // if we should continue setting the SelectedArtist
+                    if (!abort)
+                    {
+                        // Set the SelectedArtist
+                        GalleryManager.SetSelectedArtist(2, PageIndex);
+
+                        // Set the SelectedLeft
+                        SetSelectedArtistLeft(2);
+                    }
+
+                    // Update the UI
+                    StateHasChanged();
+                }
+            }
+            #endregion
+
+            #region SelectArtist3()
+            /// <summary>
+            /// This method Selects Artist 3
+            /// </summary>
+            public void SelectArtist3()
+            {
+                // local
+                bool abort = false;
+
+                // if the value for HasGalleryManager is true
+                if (HasGalleryManager)
+                {
+                    // if we have a SelectedArtist
+                    if (GalleryManager.HasSelectedArtist)
+                    {
+                        // find the position
+                        int position = GalleryManager.FindPosition(GalleryManager.SelectedArtist.Id);
+
+                        // if position is 3
+                        if (position == 3)
+                        {
+                            // set abort to true
+                            abort = true;
+
+                            // destroy the SelectedArtist
+                            GalleryManager.SelectedArtist = null;
+                        }
+                    }
+
+                    // if we should continue setting the SelectedArtist
+                    if (!abort)
+                    {
+                        // Set the SelectedArtist
+                        GalleryManager.SetSelectedArtist(3, PageIndex);
+
+                        // Set the SelectedLeft
+                        SetSelectedArtistLeft(3);
+                    }
+
+                    // Update the UI
+                    StateHasChanged();
+                }
+            }
+            #endregion
+
+            #region SelectArtist4()
+            /// <summary>
+            /// This method Selects Artist 4
+            /// </summary>
+            public void SelectArtist4()
+            {
+                // local
+                bool abort = false;
+
+                // if the value for HasGalleryManager is true
+                if (HasGalleryManager)
+                {
+                    // if we have a SelectedArtist
+                    if (GalleryManager.HasSelectedArtist)
+                    {
+                        // find the position
+                        int position = GalleryManager.FindPosition(GalleryManager.SelectedArtist.Id);
+
+                        // if position is 4
+                        if (position == 4)
+                        {
+                            // set abort to true
+                            abort = true;
+
+                            // destroy the SelectedArtist
+                            GalleryManager.SelectedArtist = null;
+                        }
+                    }
+
+                    // if we should continue setting the SelectedArtist
+                    if (!abort)
+                    {
+                        // Set the SelectedArtist
+                        GalleryManager.SetSelectedArtist(4, PageIndex);
+
+                        // Set the SelectedLeft
+                        SetSelectedArtistLeft(4);
+                    }
+
+                    // Update the UI
+                    StateHasChanged();
+                }
+            }
+            #endregion
+
+            #region SelectArtist5()
+            /// <summary>
+            /// This method Selects Artist 5
+            /// </summary>
+            public void SelectArtist5()
+            {
+                // local
+                bool abort = false;
+
+                // if the value for HasGalleryManager is true
+                if (HasGalleryManager)
+                {
+                    // if we have a SelectedArtist
+                    if (GalleryManager.HasSelectedArtist)
+                    {
+                        // find the position
+                        int position = GalleryManager.FindPosition(GalleryManager.SelectedArtist.Id);
+
+                        // if position is 5
+                        if (position == 5)
+                        {
+                            // set abort to true
+                            abort = true;
+
+                            // destroy the SelectedArtist
+                            GalleryManager.SelectedArtist = null;
+                        }
+                    }
+
+                    // if we should continue setting the SelectedArtist
+                    if (!abort)
+                    {
+                        // Set the SelectedArtist
+                        GalleryManager.SetSelectedArtist(5, PageIndex);
+
+                        // Set the SelectedLeft
+                        SetSelectedArtistLeft(5);
+                    }
+
+                    // Update the UI
+                    StateHasChanged();
+                }
+            }
+            #endregion
+            
+            #region SetSelectedArtistLeft(int position)
+            /// <summary>
+            /// This method Set Selected Artist Left
+            /// </summary>
+            public void SetSelectedArtistLeft(int position)
+            {
+                // Set the value for left
+                double left = 25 + ((position - 1) * 12);
+
+                // Set the value
+                SelectedArtistLeft = left.ToString() + "%";
             }
             #endregion
             
@@ -763,6 +1057,23 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region HasSelectedArtist
+            /// <summary>
+            /// This property returns true if this object has a 'SelectedArtist'.
+            /// </summary>
+            public bool HasSelectedArtist
+            {
+                get
+                {
+                    // initial value
+                    bool hasSelectedArtist = (this.SelectedArtist != null);
+                    
+                    // return value
+                    return hasSelectedArtist;
+                }
+            }
+            #endregion
+            
             #region PageIndex
             /// <summary>
             /// This property gets or sets the value for 'PageIndex'.
@@ -875,6 +1186,28 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region SelectedArtistLeft
+            /// <summary>
+            /// This property gets or sets the value for 'SelectedArtistLeft'.
+            /// </summary>
+            public string SelectedArtistLeft
+            {
+                get { return selectedArtistLeft; }
+                set { selectedArtistLeft = value; }
+            }
+            #endregion
+            
+            #region SelectedArtistStyle
+            /// <summary>
+            /// This property gets or sets the value for 'SelectedArtistStyle'.
+            /// </summary>
+            public string SelectedArtistStyle
+            {
+                get { return selectedArtistStyle; }
+                set { selectedArtistStyle = value; }
+            }
+            #endregion
+            
             #region ShowNextButton
             /// <summary>
             /// This property gets or sets the value for 'ShowNextButton'.

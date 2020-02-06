@@ -8,92 +8,153 @@
 
 <Styled @bind-Classname="@ArtistStyle1">
     background-image: url('@Artist1ProfilePictureUrl');    
-    position: fixed;
-    top: 74.6%;
-    left: 16%;
     width: 256px;
     height: 256px;
     transform: scale(0.25);
     transform-origin: left;   
     border: 2px solid black;
+    z-index: 1;
+    position: relative;
+    top: -96px;
+    left: 0px;
+    outline: none;
 </Styled>
 <Styled @bind-Classname="@ArtistStyle2">
     background-image: url('@Artist2ProfilePictureUrl');    
-    position: fixed;
-    top: 74.6%;
-    left: 28%;
     width: 256px;
     height: 256px;
     transform: scale(0.25);
     transform-origin: left;   
     border: 2px solid black;
+    z-index: 1;
+    position: relative;
+    top: -96px;
+    left: 0px;
 </Styled>
 <Styled @bind-Classname="@ArtistStyle3">
     background-image: url('@Artist3ProfilePictureUrl');    
-    position: fixed;
-    top: 74.6%;
-    left: 40%;
     width: 256px;
     height: 256px;
     transform: scale(0.25);
     transform-origin: left;   
     border: 2px solid black;
+    z-index: 1;
+    position: relative;
+    top: -96px;
+    left: 0px;
 </Styled>
 <Styled @bind-Classname="@ArtistStyle4">
     background-image: url('@Artist4ProfilePictureUrl');    
-    position: fixed;
-    top: 74.6%;
-    left: 52%;
     width: 256px;
     height: 256px;
     transform: scale(0.25);
     transform-origin: left;   
     border: 2px solid black;
+    z-index: 1;
+    position: relative;
+    top: -96px;
+    left: 0px;
 </Styled>
 <Styled @bind-Classname="@ArtistStyle5">
     background-image: url('@Artist5ProfilePictureUrl');    
-    position: fixed;
-    top: 74.6%;
-    left: 64%;
     width: 256px;
     height: 256px;
     transform: scale(0.25);
     transform-origin: left;   
     border: 2px solid black;
+    z-index: 1;
+    position: relative;
+    top: -96px;
+    left: 0px;
+</Styled>
+<Styled @bind-Classname="@SelectedArtistStyle">    
+    background-image: url('../Images/Frames/FrameBlue.png');
+    position: absolute;
+    bottom: -160%;
+    left: -4px;
+    width: 280px;
+    height: 264px;
+    transform: scale(0.25);
+    transform-origin: left;   
+    border: 2px solid white;
+    z-index: 10;
 </Styled>
 
-<div class="prevbuttoncontainer">
-    @if (ShowPrevButton)
-    {
-        <button class="prevbutton" @onclick="PrevButton_Click"></button>
-    }
+<div class="artists">    
+    <div class="block2">
+        @if ((ShowPrevButton) && (!HasSelectedArtist))
+        {  
+             <button class="prevbutton" @onclick="PrevButton_Click"></button>
+        }        
+    </div>
+    <div class="block2">
+        @if ((HasArtist1) && (IsArtistVisible(1)))
+        {  
+            <button class="@ArtistStyle1 nofocusbutton" @onclick="SelectArtist1">
+                <span class="artistname">@Artist1Name</span>
+            </button>                 
+            @if ((HasSelectedArtist) && (IsArtistSelected(1)))
+            {
+                <div class="@SelectedArtistStyle"></div>
+            }
+        }
+    </div>    
+    <div class="block">
+       @if ((HasArtist2) && (IsArtistVisible(2)))
+        {  
+            <button class="@ArtistStyle2 nofocusbutton" @onclick="SelectArtist2">
+                <span class="artistname">@Artist2Name</span>
+            </button>                 
+            @if ((HasSelectedArtist) && (IsArtistSelected(2)))
+            {
+                <div class="@SelectedArtistStyle"></div>
+            }
+        }
+    </div> 
+    <div class="block">
+       @if ((HasArtist3) && (IsArtistVisible(3)))
+        {  
+            <button class="@ArtistStyle3 nofocusbutton" @onclick="SelectArtist3">
+                <span class="artistname">@Artist3Name</span>
+            </button>                 
+            @if ((HasSelectedArtist) && (IsArtistSelected(3)))
+            {
+                <div class="@SelectedArtistStyle"></div>
+            }
+        }
+    </div> 
+    <div class="block">
+        @if ((HasArtist4) && (IsArtistVisible(4)))
+        {  
+            <button class="@ArtistStyle4 nofocusbutton" @onclick="SelectArtist4">
+                <span class="artistname">@Artist4Name</span>
+            </button>                 
+            @if ((HasSelectedArtist) && (IsArtistSelected(4)))
+            {
+                <div class="@SelectedArtistStyle"></div>
+            }
+        }
+    </div> 
+    <div class="block">
+        @if ((HasArtist5) && (IsArtistVisible(5)))
+        {  
+            <button class="@ArtistStyle5 nofocusbutton" @onclick="SelectArtist5">
+                <span class="artistname">@Artist5Name</span>
+            </button>                 
+            @if ((HasSelectedArtist) && (IsArtistSelected(5)))
+            {
+                <div class="@SelectedArtistStyle"></div>
+            }
+        }
+    </div> 
+    <div class="block2">
+       @if ((ShowNextButton) && (!HasSelectedArtist))
+        {
+            <button class="nextbutton" @onclick="NextButton_Click"></button>
+        }
+    </div>
 </div>
 
-@if (HasArtist1)
-{  
-    <button class="@ArtistStyle1"><span class="text-white text-center fontarial48 moveup160">@Artist1Name</span></button>
-}
-@if (HasArtist2)
-{  
-    <button class="@ArtistStyle2"><span class="text-white text-center fontarial48 moveup160">@Artist2Name</span></button>
-}
-@if (HasArtist3)
-{  
-    <button class="@ArtistStyle3"><span class="text-white text-center fontarial48 moveup160">@Artist3Name</span></button>
-}
-@if (HasArtist4)
-{  
-    <button class="@ArtistStyle4"><span class="text-white text-center fontarial48 moveup160">@Artist4Name</span></button>
-}
-@if (HasArtist5)
-{  
-    <button class="@ArtistStyle5"><span class="text-white text-center fontarial48 moveup160">@Artist5Name</span></button>
-}
-
-<div class="nextbuttoncontainer">
-    @if (ShowNextButton)
-    {
-        <button class="nextbutton" @onclick="NextButton_Click"></button>
-    }
+<div class="clickartist">
+    Click an artist to enter / exit Gallery
 </div>
-

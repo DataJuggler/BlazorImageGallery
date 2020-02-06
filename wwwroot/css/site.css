@@ -1,5 +1,40 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.artistname
+{
+    display: block;
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    height: 16px;
+    text-align: center;
+    color: white;
+    font-family: Verdana;
+    font-size: 1em;  
+    transform: scale(4.00);
+    transform-origin: left; 
+    position: absolute;
+    top: -44px;
+    left: -4px;
+    outline: none;
+}
+.artistname:focus 
+{
+    outline: none;
+}
+.artists
+{
+    display: block;
+    position: fixed;
+    bottom: .4%;
+    left: 50%;
+    margin-left: -384px;
+    width: 768PX;
+    height: 84px;
+    z-index: 0;
+    text-wrap: none;  
+    background-color: transparent;
+}
 .artistlistpagenumber
 {
     position: fixed;
@@ -9,6 +44,30 @@
     font-weight: normal;
     font-family: Arial;
     font-size: 14px;
+}
+.block
+{
+    display: inline-block;
+    height: 64px;
+    width: 64px;
+    position: relative;
+    top: 0px;
+    position: relative;
+    top: 20px;    
+    vertical-align: top;
+    margin-left: 64px;    
+}
+.block2
+{
+    display: inline-block;
+    height: 64px;
+    width: 64px;
+    position: relative;
+    top: 0px;
+    margin-left: 0px;
+    position: relative;
+    top: 20px;    
+    vertical-align: top;
 }
 .button 
 {
@@ -76,6 +135,15 @@
     font-weight: 500;
     color: black;
 }
+.clickartist
+{
+    position: fixed;
+    bottom: 2%;
+    left: 2%;
+    font-family: Verdana;
+    font-size: 12px;
+    color: white;
+}
 .customfileupload
 {  
     display: inline-block;
@@ -107,10 +175,10 @@
     bottom: 12px;
     color: darkgray;
 }
-.fontarial48
+.fontarial12
 {
     font-family: Arial;
-    font-size: 48px;
+    font-size: 12px;
     color: White;
     text-align: Center;
 }
@@ -281,6 +349,11 @@
     position: relative;
     top: -32px;
 }
+.moveup48
+{
+    position: relative;
+    top: -48px;
+}
 .moveup128
 {
     position: relative;
@@ -295,53 +368,53 @@
 {
     display: inline-block;
     border: none;
-    width: 52px;
+    width: 64px;
     height: 64px;
+    margin-left: auto;
+    margin-right: auto;    
     background-image: url('../images/buttons/bluearrowright.png');
-    background-color: transparent;
     transform: scale(0.75);
     transform-origin: left;
+    z-index: 30;   
+    background-color: transparent;
+    position: relative;
+    top: 50%;
+    margin-top: -32px;
 }
 .nextbutton:focus 
 {
-  outline: none;
-}
-.nextbuttoncontainer
-{
-    position: fixed;
-    left: 69.8%;
-    bottom: 4.5%;
-    width: 39px;
-    height: 48px;
-    background-color: transparent;
+    outline: none;
 }
 .nodisplay
 {
     display: none;
 }
+.nofocusbutton
+{
+    outline: none;
+}
+.nofocusbutton:focus
+{
+    outline: none;
+}
 .prevbutton 
 {
-    display: inline-block;
+    display: block;
     border: none;
-    width: 52px;
-    height: 64px;
+    width: 64px;
+    height: 64px;    
     background-image: url('../images/buttons/bluearrowleft.png');
-    background-color: transparent;
     transform: scale(0.75);
     transform-origin: left;
+    z-index: 30;
+    background-color: transparent;
+    position: relative;
+    top: 50%;
+    margin-top: -32px;
 }
 .prevbutton:focus 
 {
-  outline: none;
-}
-.prevbuttoncontainer
-{
-    position: fixed;
-    left: 12.4%;
-    bottom: 4.5%;
-    width: 39px;
-    height: 48px;
-    background-color: transparent;
+     outline: none;
 }
 .profilepicture
 {
@@ -383,6 +456,19 @@
     top: 80%;
     left: 20%;
     color: orange;
+}
+.welcome 
+{
+    background-image: url('../images/welcomemessage.png');
+    height: 196px;
+    width: 550px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -98px; /* Half the height */
+    margin-left: -275px; /* Half the width */
+    /*transform: scale(0.75);
+    transform-origin: left;*/
 }
 
 input[type=file], /* FF, IE7+, chrome (except button) */

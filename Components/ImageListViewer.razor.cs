@@ -25,6 +25,7 @@ namespace BlazorImageGallery.Components
         #region Private Variables
         private Image selectedImage;
         private string selectedImageCSS;
+        private bool showWelcomeMessage;
         #endregion
 
         #region Properties
@@ -36,6 +37,40 @@ namespace BlazorImageGallery.Components
             [CascadingParameter] GalleryManager GalleryManager { get; set; }
             #endregion
 
+            #region HasGalleryManager
+            /// <summary>
+            /// This property returns true if this object has a 'GalleryManager'.
+            /// </summary>
+            public bool HasGalleryManager
+            {
+                get
+                {
+                    // initial value
+                    bool hasGalleryManager = (this.GalleryManager != null);
+                    
+                    // return value
+                    return hasGalleryManager;
+                }
+            }
+            #endregion
+            
+            #region HasImages
+            /// <summary>
+            /// This property returns true if this object has an 'Images'.
+            /// </summary>
+            public bool HasImages
+            {
+                get
+                {
+                    // initial value
+                    bool hasImages = (this.Images != null);
+                    
+                    // return value
+                    return hasImages;
+                }
+            }
+            #endregion
+            
             #region HasSelectedImage
             /// <summary>
             /// This property returns true if this object has a 'SelectedImage'.
@@ -49,6 +84,30 @@ namespace BlazorImageGallery.Components
                     
                     // return value
                     return hasSelectedImage;
+                }
+            }
+            #endregion
+            
+            #region Images
+            /// <summary>
+            /// This property gets or sets the value for 'Images'.
+            /// </summary>
+            public List<Image> Images
+            {
+                get 
+                { 
+                    // initial value
+                    List<Image> images = null;
+
+                    // If the value for the property .HasGalleryManager is true
+                    if ((HasGalleryManager) && (GalleryManager.HasSelectedArtist))
+                    {
+                        // set the return value
+                        images = GalleryManager.SelectedArtist.Images;
+                    }
+
+                    // set the return value
+                    return images; 
                 }
             }
             #endregion
@@ -98,6 +157,30 @@ namespace BlazorImageGallery.Components
 
                     // return value
                     return selectedImageURL;
+                }
+            }
+            #endregion
+            
+            #region ShowWelcomeMessage
+            /// <summary>
+            /// This property gets or sets the value for 'ShowWelcomeMessage'.
+            /// </summary>
+            public bool ShowWelcomeMessage
+            {
+                get 
+                { 
+                    // initial value
+                    bool showWelcomeMessage = true;
+
+                    // if the value for HasGalleryManager is true
+                    if (HasGalleryManager)
+                    {
+                        // Show the Welcome message if there is not a selected artist
+                        showWelcomeMessage = !GalleryManager.HasSelectedArtist;
+                    }
+
+                    // set the return value
+                    return showWelcomeMessage;
                 }
             }
             #endregion
