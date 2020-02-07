@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ObjectLibrary.BusinessObjects;
 using Microsoft.AspNetCore.Components;
 using BlazorImageGallery.Util;
+using DataJuggler.Blazor.FileUpload;
 
 #endregion
 
@@ -25,10 +26,85 @@ namespace BlazorImageGallery.Components
         #region Private Variables
         private Image selectedImage;
         private string selectedImageCSS;
-        private bool showWelcomeMessage;
+        private string message;
+        #endregion
+
+        #region Methods
+
+            #region OnFileUploaded(UploadedFileInfo uploadedFileInfo)
+            /// <summary>
+            /// This method is called by DataJuggler.Blazor.FileUpload after a file is uploaded.
+            /// </summary>
+            /// <param name="uploadedFileInfo"></param>
+            private void OnFileUploaded(UploadedFileInfo uploadedFileInfo)
+            {
+                // if aborted
+                if (uploadedFileInfo.Aborted)
+                {
+                    // get the status
+                    this.Message = uploadedFileInfo.ErrorMessage;
+                }
+                else
+                {
+                    //// get the status
+                    //// status = "The file " + uploadedFileInfo.FullName + " was uploaded.";
+
+                    //// other information about the file is available
+                    //DateTime lastModified = uploadedFileInfo.LastModified;
+                    //string nameAsItIsOnDisk = uploadedFileInfo.NameWithPartialGuid;
+                    //string partialGuid = uploadedFileInfo.PartialGuid;
+                    //long size = uploadedFileInfo.Size;
+                    //string type = uploadedFileInfo.Type;
+
+                    // Set the ProfileImageUrl
+                    // ProfileImageUrl = "../images/artists/" + uploadedFileInfo.FullName;
+
+                    
+                }
+
+                // Refresh the UI
+                StateHasChanged();
+            }
+            #endregion
+
+            #region OnReset(string notUsedButRequiredArg)
+            /// <summary>
+            /// (Optional) This event callback is called by DataJuggler.Blazor.FileUpload after the ResetButton is clicked.
+            /// </summary>
+            /// <param name="notUsedButRequiredArg">InvokeAsync sends an object parameter, so I believe this or something is required.</param>
+            private void OnReset(string notUsedButRequiredArg)
+            {
+                
+            }
+            #endregion
+
         #endregion
 
         #region Properties
+
+            #region Artist
+            /// <summary>
+            /// This read only property returns the GalleryManager.Artist
+            /// </summary>
+            public Artist Artist
+            {
+                get
+                {
+                    // initial value
+                    Artist artist = null;
+
+                    // if the value for HasGalleryManager is true
+                    if (HasGalleryManager)
+                    {
+                        // set the return value
+                        artist = GalleryManager.Artist;
+                    }
+
+                    // return value
+                    return artist;
+                }
+            }
+            #endregion
 
             #region GalleryManager
             /// <summary>
@@ -37,6 +113,71 @@ namespace BlazorImageGallery.Components
             [CascadingParameter] GalleryManager GalleryManager { get; set; }
             #endregion
 
+            #region GalleryOwner
+            /// <summary>
+            /// This read only property returns the GalleryManager.SelectedArtist
+            /// </summary>
+            public Artist GalleryOwner
+            {
+                get
+                {
+                    // initial value
+                    Artist galleryOwner = null;
+
+                    // if the value for HasGalleryManager is true
+                    if (HasGalleryManager)
+                    {
+                        // set the return value
+                        galleryOwner = GalleryManager.SelectedArtist;
+                    }
+
+                    // return value
+                    return galleryOwner;
+                }
+            }
+            #endregion
+
+            #region GalleryTitle
+            /// <summary>
+            /// This read only property returns true the value for 'GalleryTitle'.
+            /// </summary>
+            public string GalleryTitle
+            {
+                get
+                {
+                    // initial value
+                    string galleryTitle = "";
+                    
+                    // if the value for HasGalleryOwner is true
+                    if (HasGalleryOwner)
+                    {
+                        // Show the gallery owner
+                        galleryTitle = GalleryOwner.Name + "'s Gallery";
+                    }
+                    
+                    // return value
+                    return galleryTitle;
+                }
+            }
+            #endregion
+            
+            #region HasArtist
+            /// <summary>
+            /// This property returns true if this object has an 'Artist'.
+            /// </summary>
+            public bool HasArtist
+            {
+                get
+                {
+                    // initial value
+                    bool hasArtist = (this.Artist != null);
+                    
+                    // return value
+                    return hasArtist;
+                }
+            }
+            #endregion
+            
             #region HasGalleryManager
             /// <summary>
             /// This property returns true if this object has a 'GalleryManager'.
@@ -54,6 +195,40 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region HasGalleryOwner
+            /// <summary>
+            /// This property returns true if this object has a 'GalleryOwner'.
+            /// </summary>
+            public bool HasGalleryOwner
+            {
+                get
+                {
+                    // initial value
+                    bool hasGalleryOwner = (this.GalleryOwner != null);
+                    
+                    // return value
+                    return hasGalleryOwner;
+                }
+            }
+            #endregion
+            
+            #region HasGalleryTitle
+            /// <summary>
+            /// This property returns true if the 'GalleryTitle' exists.
+            /// </summary>
+            public bool HasGalleryTitle
+            {
+                get
+                {
+                    // initial value
+                    bool hasGalleryTitle = (!String.IsNullOrEmpty(this.GalleryTitle));
+                    
+                    // return value
+                    return hasGalleryTitle;
+                }
+            }
+            #endregion
+            
             #region HasImages
             /// <summary>
             /// This property returns true if this object has an 'Images'.
@@ -67,6 +242,23 @@ namespace BlazorImageGallery.Components
                     
                     // return value
                     return hasImages;
+                }
+            }
+            #endregion
+            
+            #region HasMessage
+            /// <summary>
+            /// This property returns true if the 'Message' exists.
+            /// </summary>
+            public bool HasMessage
+            {
+                get
+                {
+                    // initial value
+                    bool hasMessage = (!String.IsNullOrEmpty(this.Message));
+                    
+                    // return value
+                    return hasMessage;
                 }
             }
             #endregion
@@ -109,6 +301,41 @@ namespace BlazorImageGallery.Components
                     // set the return value
                     return images; 
                 }
+            }
+            #endregion
+
+            #region IsArtistGalleryOwner
+            /// <summary>
+            /// This read only property returns true if the GalleryManager.Artist is the SelectedArtist
+            /// </summary>
+            public bool IsArtistGalleryOwner
+            {
+                get
+                {
+                    // initiial value
+                    bool isArtistGalleryOwner = false;
+
+                    // verify the GalleryManager.Artist and GalleryManager.SelectedArtist both exist
+                    if ((HasArtist) && (HasGalleryOwner))
+                    {
+                        // set the return value
+                        isArtistGalleryOwner = (GalleryManager.Artist.Id == GalleryManager.SelectedArtist.Id);
+                    }
+
+                    // return value
+                    return isArtistGalleryOwner;
+                }
+            }
+            #endregion
+            
+            #region Message
+            /// <summary>
+            /// This property gets or sets the value for 'Message'.
+            /// </summary>
+            public string Message
+            {
+                get { return message; }
+                set { message = value; }
             }
             #endregion
             
@@ -177,6 +404,13 @@ namespace BlazorImageGallery.Components
                     {
                         // Show the Welcome message if there is not a selected artist
                         showWelcomeMessage = !GalleryManager.HasSelectedArtist;
+
+                        // we have to check if a Login is in process
+                        if ((showWelcomeMessage) && (GalleryManager.HasIndexPage))
+                        {
+                            // Is a Login or SignUp in Progress
+                            showWelcomeMessage = !GalleryManager.IndexPage.LoginOrSignUpInProgress;
+                        }
                     }
 
                     // set the return value
@@ -184,7 +418,31 @@ namespace BlazorImageGallery.Components
                 }
             }
             #endregion
-            
+        
+            #region SelectedArtist
+            /// <summary>
+            /// This read only property 
+            /// </summary>
+            public Artist SelectedArtist
+            {
+                get
+                {
+                    // initial value
+                    Artist selectedArtist = null;
+
+                    // if the GalleryManager exists
+                    if (HasGalleryManager)
+                    {
+                        // Set the selectedArtist
+                        selectedArtist = GalleryManager.SelectedArtist;
+                    }
+
+                    // return value
+                    return selectedArtist;
+                }
+            }
+        #endregion
+
         #endregion
 
     }

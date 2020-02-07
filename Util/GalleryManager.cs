@@ -2,12 +2,12 @@
 
 #region using statements
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ObjectLibrary.BusinessObjects;
 using DataJuggler.UltimateHelper.Core;
+using BlazorImageGallery.Pages;
 
 #endregion
 
@@ -25,16 +25,18 @@ namespace BlazorImageGallery.Util
         #region Private Variables
         private Artist artist;
         private Artist selectedArtist;
-        private List<Artist> artists;        
+        private List<Artist> artists;
+        private Index indexPage;
         #endregion
 
-        #region Constructor()
+        #region Constructor(Index indexPage)
         /// <summary>
         /// Create a new instance of GalleryManager object
         /// </summary>
-        public GalleryManager()
+        public GalleryManager(Index indexPage)
         {   
-            
+            // Store the Index page
+            this.IndexPage = indexPage;
         }
         #endregion
 
@@ -117,9 +119,9 @@ namespace BlazorImageGallery.Util
                     if ((index >= 0) && (index < Artists.Count))
                     {
                         // Set the SelectedArtist
-                        this.SelectedArtist = Artists[index];
+                        this.SelectedArtist = Artists[index];                       
                     }
-                }
+                }               
             }
             #endregion
             
@@ -149,6 +151,40 @@ namespace BlazorImageGallery.Util
             }
             #endregion
             
+            #region HasArtist
+            /// <summary>
+            /// This property returns true if this object has an 'Artist'.
+            /// </summary>
+            public bool HasArtist
+            {
+                get
+                {
+                    // initial value
+                    bool hasArtist = (this.Artist != null);
+                    
+                    // return value
+                    return hasArtist;
+                }
+            }
+            #endregion
+            
+            #region HasIndexPage
+            /// <summary>
+            /// This property returns true if this object has an 'IndexPage'.
+            /// </summary>
+            public bool HasIndexPage
+            {
+                get
+                {
+                    // initial value
+                    bool hasIndexPage = (this.IndexPage != null);
+                    
+                    // return value
+                    return hasIndexPage;
+                }
+            }
+            #endregion
+            
             #region HasSelectedArtist
             /// <summary>
             /// This property returns true if this object has a 'SelectedArtist'.
@@ -166,6 +202,17 @@ namespace BlazorImageGallery.Util
             }
             #endregion
             
+            #region IndexPage
+            /// <summary>
+            /// This property gets or sets the value for 'IndexPage'.
+            /// </summary>
+            public Index IndexPage
+            {
+                get { return indexPage; }
+                set { indexPage = value; }
+            }
+            #endregion
+            
             #region SelectedArtist
             /// <summary>
             /// This property gets or sets the value for 'SelectedArtist'.
@@ -173,7 +220,18 @@ namespace BlazorImageGallery.Util
             public Artist SelectedArtist
             {
                 get { return selectedArtist; }
-                set { selectedArtist = value; }
+                set 
+                {       
+                    // set the value
+                    selectedArtist = value;
+
+                    // if the value for HasIndexPage is true
+                    if (HasIndexPage)
+                    {
+                        // Update the UI (to hide the 
+                        IndexPage.Refresh();
+                    }
+                }
             }
             #endregion
             

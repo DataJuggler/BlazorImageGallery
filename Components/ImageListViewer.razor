@@ -2,4 +2,34 @@
 {
     <div class="welcome"></div>
 }
+else
+{
+    <div class="gallery">
+        <div class="gallerytitle">
+            @if (HasGalleryTitle)
+            {  
+                @GalleryTitle  
+            }
+        </div>
+        @if (HasMessage)
+        {
+            <div class="message">
+                @Message
+            </div>
+        }
+        @if (IsArtistGalleryOwner)
+        {
+            <div class="">
+            Upload Images<br  />
+            <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
+                ShowStatus="false"  PartialGuidLength="10" MaxFileSize="4194304" FilterByExtension="true" 
+                ShowCustomButton="true" ButtonText="Select File" ButtonClassName="button" UploadFolder="wwwroot/images/artists"
+                AllowedExtensions=".jpg;.png;" ShowResetButton="true" OnReset="OnReset" ResetButtonText="New"
+                CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
+                InputFileClassName="customfileupload" FileTooLargeMessage="The file uploaded must be 4 megabytes or smaller.">
+            </FileUpload>
+        </div>     
+        }
+    </div>
+}
 

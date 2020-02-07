@@ -33,7 +33,6 @@ namespace BlazorImageGallery.Components
         private bool showPrevButton;
         private bool showNextButton;
         private string selectedArtistStyle;
-        private string selectedArtistLeft;
         public const int ArtistsPerPage = 5;        
         #endregion
 
@@ -208,9 +207,6 @@ namespace BlazorImageGallery.Components
                     {
                         // Set the SelectedArtist
                         GalleryManager.SetSelectedArtist(1, PageIndex);
-
-                        // Set the SelectedLeft
-                        SetSelectedArtistLeft(1);
                     }
 
                     // Update the UI
@@ -253,9 +249,6 @@ namespace BlazorImageGallery.Components
                     {
                         // Set the SelectedArtist
                         GalleryManager.SetSelectedArtist(2, PageIndex);
-
-                        // Set the SelectedLeft
-                        SetSelectedArtistLeft(2);
                     }
 
                     // Update the UI
@@ -298,9 +291,6 @@ namespace BlazorImageGallery.Components
                     {
                         // Set the SelectedArtist
                         GalleryManager.SetSelectedArtist(3, PageIndex);
-
-                        // Set the SelectedLeft
-                        SetSelectedArtistLeft(3);
                     }
 
                     // Update the UI
@@ -343,9 +333,6 @@ namespace BlazorImageGallery.Components
                     {
                         // Set the SelectedArtist
                         GalleryManager.SetSelectedArtist(4, PageIndex);
-
-                        // Set the SelectedLeft
-                        SetSelectedArtistLeft(4);
                     }
 
                     // Update the UI
@@ -388,28 +375,11 @@ namespace BlazorImageGallery.Components
                     {
                         // Set the SelectedArtist
                         GalleryManager.SetSelectedArtist(5, PageIndex);
-
-                        // Set the SelectedLeft
-                        SetSelectedArtistLeft(5);
                     }
 
                     // Update the UI
                     StateHasChanged();
                 }
-            }
-            #endregion
-            
-            #region SetSelectedArtistLeft(int position)
-            /// <summary>
-            /// This method Set Selected Artist Left
-            /// </summary>
-            public void SetSelectedArtistLeft(int position)
-            {
-                // Set the value for left
-                double left = 25 + ((position - 1) * 12);
-
-                // Set the value
-                SelectedArtistLeft = left.ToString() + "%";
             }
             #endregion
             
@@ -1186,17 +1156,6 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
-            #region SelectedArtistLeft
-            /// <summary>
-            /// This property gets or sets the value for 'SelectedArtistLeft'.
-            /// </summary>
-            public string SelectedArtistLeft
-            {
-                get { return selectedArtistLeft; }
-                set { selectedArtistLeft = value; }
-            }
-            #endregion
-            
             #region SelectedArtistStyle
             /// <summary>
             /// This property gets or sets the value for 'SelectedArtistStyle'.

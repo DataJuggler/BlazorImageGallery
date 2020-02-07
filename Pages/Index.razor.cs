@@ -37,6 +37,7 @@ namespace BlazorImageGallery.Pages
         private Login login;
         private string passwordHash;
         private string message;
+        private bool loginOrSignUpInProgress;
         #endregion
 
         #region Constructor
@@ -149,7 +150,7 @@ namespace BlazorImageGallery.Pages
                         }
 
                         // Create a new instance of a 'GalleryManager' object.
-                        this.GalleryManager = new GalleryManager();
+                        this.GalleryManager = new GalleryManager(this);
 
                         // Set the Artist
                         this.GalleryManager.Artist = this.Artist;
@@ -171,7 +172,7 @@ namespace BlazorImageGallery.Pages
             protected override async Task OnInitializedAsync()
             {
                 // Create the GalleryManager
-                this.GalleryManager = new GalleryManager();
+                this.GalleryManager = new GalleryManager(this);
 
                 // Load the Artists
                 this.GalleryManager.Artists = await ArtistService.GetArtistList();
@@ -254,7 +255,7 @@ namespace BlazorImageGallery.Pages
                         this.Login = component as Login;
                     }
 
-                    // add this child
+                   // add this child
                    Children.Add(component);
                 }
             }
@@ -351,6 +352,17 @@ namespace BlazorImageGallery.Pages
             {
                 get { return login; }
                 set { login = value; }
+            }
+            #endregion
+            
+            #region LoginOrSignUpInProgress
+            /// <summary>
+            /// This property gets or sets the value for 'LoginOrSignUpInProgress'.
+            /// </summary>
+            public bool LoginOrSignUpInProgress
+            {
+                get { return loginOrSignUpInProgress; }
+                set { loginOrSignUpInProgress = value; }
             }
             #endregion
             

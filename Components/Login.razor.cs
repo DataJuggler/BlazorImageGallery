@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BlazorImageGallery.Pages;
 
 #endregion
 
@@ -70,11 +71,12 @@ namespace BlazorImageGallery.Components
             /// <summary>
             /// method Cancel
             /// </summary>
-            private void Cancel()
+            internal void Cancel()
             {
                 // reset
                 action = "";
                 noAction = true;
+                bool updated = false;
                 OnReset("FromCancel");
 
                 // if the Parent exists
@@ -88,10 +90,27 @@ namespace BlazorImageGallery.Components
 
                     // Send a message
                     Parent.ReceiveData(message);
+
+                    // indexPage
+                    if (HasIndexPage)
+                    {
+                        // We are not longer logging or signing up
+                        IndexPage.LoginOrSignUpInProgress = false;
+
+                        // We are not longer logging or signing up
+                        IndexPage.Refresh();
+
+                        // set to true
+                        updated = true;
+                    }
                 }
                 
-                // Update the UI
-                StateHasChanged();
+                // if the value for updated is false
+                if (!updated)
+                {
+                    // Update the UI
+                    StateHasChanged();
+                }
             }
             #endregion
 
@@ -216,6 +235,32 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region LoadLocalPrivateData()
+            /// <summary>
+            /// This method Load Local Private Data
+            /// </summary>
+            public async Task LoadLocalPrivateData()
+            {
+                // get the values from local storage if present
+                RememberLogin = await ProtectedLocalStore.GetAsync<bool>("RememberLogin");
+
+                // if RememberLogin is true
+                if (RememberLogin)
+                {
+                    emailAddress = await ProtectedLocalStore.GetAsync<string>("ArtistEmailAddress");
+                    storedPasswordHash = await ProtectedLocalStore.GetAsync<string>("ArtistPasswordHash");
+                    password = "**********";
+                }
+                else
+                {
+                    // erase
+                    emailAddress = "";
+                    storedPasswordHash = "";
+                    password = "";                       
+                }
+            }
+            #endregion
+            
             #region NotifyIndexPage()
             /// <summary>
             /// This method Notify Index Page
@@ -240,48 +285,9 @@ namespace BlazorImageGallery.Components
                     DebugHelper.WriteDebugError("NotifyIndexPage", "Login", error);
                 }
             }
-            #endregion
-            
-            #region OnFileUploaded(UploadedFileInfo uploadedFileInfo)
-            /// <summary>
-            /// This method is called by DataJuggler.Blazor.FileUpload after a file is uploaded.
-            /// </summary>
-            /// <param name="uploadedFileInfo"></param>
-            private void OnFileUploaded(UploadedFileInfo uploadedFileInfo)
-            {
-                // if aborted
-                if (uploadedFileInfo.Aborted)
-                {
-                    // get the status
-                    this.Message = uploadedFileInfo.ErrorMessage;
-                }
-                else
-                {
-                    //// get the status
-                    //// status = "The file " + uploadedFileInfo.FullName + " was uploaded.";
+        #endregion
 
-                    //// other information about the file is available
-                    //DateTime lastModified = uploadedFileInfo.LastModified;
-                    //string nameAsItIsOnDisk = uploadedFileInfo.NameWithPartialGuid;
-                    //string partialGuid = uploadedFileInfo.PartialGuid;
-                    //long size = uploadedFileInfo.Size;
-                    //string type = uploadedFileInfo.Type;
-
-                    // Set the ProfileImageUrl
-                    ProfileImageUrl = "../images/artists/" + uploadedFileInfo.FullName;
-
-                    // Handled for custom button
-                    showUploadButton = false;
-
-                    // The above information can be used to display, and / or process a file
-                }
-
-                // Refresh the UI
-                StateHasChanged();
-            }
-            #endregion
-
-            #region OnInitializedAsync()
+        #region OnInitializedAsync()
             /// <summary>
             /// This method is used to restored values stored in local storage
             /// </summary>
@@ -304,9 +310,9 @@ namespace BlazorImageGallery.Components
                         // erase
                         emailAddress = "";
                         storedPasswordHash = "";
-                        password = "";                       
+                        password = "";
                     }
-                }
+            }
                 catch (Exception error)
                 {
                     // for debugging only
@@ -371,6 +377,13 @@ namespace BlazorImageGallery.Components
                             }
                         }
 
+                        // if the Index page exists
+                        if (HasIndexPage)
+                        {
+                            // We are finished logging in
+                            IndexPage.LoginOrSignUpInProgress = false;
+                        }
+
                         // Refresh the UI
                         Refresh();
                     }
@@ -405,6 +418,13 @@ namespace BlazorImageGallery.Components
                             NotifyIndexPage();
                         }
 
+                        // if the value for HasIndexPage is true
+                        if (HasIndexPage)
+                        {
+                            // We are finished signing up
+                            IndexPage.LoginOrSignUpInProgress = false;
+                        }
+
                         // Refresh the UI
                         Refresh();
                     }
@@ -421,7 +441,7 @@ namespace BlazorImageGallery.Components
             /// <summary>
             /// (Optional) This event callback is called by DataJuggler.Blazor.FileUpload after the ResetButton is clicked.
             /// </summary>
-            /// <param name="notUsedButRequiredArg">InvokeAsync sends an object parameter, so I believe this or something is required.</param>
+            /// <param name="notUsedButRequiredArg">InvokeAsync sends an object parameter</param>
             private void OnReset(string notUsedButRequiredArg)
             {
                 // reset back to Default
@@ -661,6 +681,16 @@ namespace BlazorImageGallery.Components
                 
                 // set the action to Signup
                 action = "LoginExistingUser";
+
+                // if the Parent exists
+                if (HasIndexPage)
+                {  
+                    // Set to true
+                    IndexPage.LoginOrSignUpInProgress = true;
+
+                    // Refresh the page
+                    IndexPage.Refresh();
+                }
             }
             #endregion
             
@@ -675,6 +705,16 @@ namespace BlazorImageGallery.Components
 
                 // Set Action
                 Action = "NewUserSignUp";
+
+                // if the Parent exists
+                if (HasIndexPage)
+                {  
+                    // Set to true
+                    IndexPage.LoginOrSignUpInProgress = true;
+
+                    // Refresh the page
+                    IndexPage.Refresh();
+                }
 
                 // update the UI
                 StateHasChanged();
@@ -716,91 +756,6 @@ namespace BlazorImageGallery.Components
 
                 // The StateHasChanged
                 StateHasChanged();
-            }
-            #endregion
-            
-            #region ValidateArtist()
-            /// <summary>
-            /// This method ensures we have a valid Artist
-            /// </summary>
-            /// <returns></returns>
-            private bool ValidateArtist()
-            {
-                // initial value
-                bool isValid = false;
-                
-                // if the artist exists
-                if (NullHelper.Exists(artist))
-                {
-                    // if the emailAddress and DisplayName
-                    if (TextHelper.Exists(artist.Name, artist.EmailAddress, password, confirmPassword))
-                    {
-                        // If this passwords match, this is valid
-                        bool passwordsMatch = TextHelper.IsEqual(password, confirmPassword);
-                        
-                        // if passwords do not match
-                        if (!passwordsMatch)
-                        {
-                            // set the message
-                            message = "Passwords do not match.";
-                        }
-                        else
-                        {
-                            // if Name is not set
-                            if (artist.Name == "Name")
-                            {
-                                // Set the message
-                                message = "You must set the Name";
-                            }
-                            else if (artist.EmailAddress == "Email")
-                            {
-                                // Set the message
-                                message = "You must enter a valid email";
-                            }
-                            else if (password == "Password")
-                            {
-                                // Set the message
-                                message = "You must enter a Password other than Password";
-                            }
-                            else if (confirmPassword == "Confirm Password")
-                            {
-                                // Set the message
-                                message = "You must enter a Confirm Password other than Confirm Password";
-                            }
-                            else
-                            {
-                                // erase the message
-                                message = "";
-                                
-                                // probably more to do
-                                isValid = true;
-                            }
-                        }
-                    }
-                    else if (!TextHelper.Exists(artist.Name))
-                    {
-                        // set the message
-                        message = "DisplayName is required.";
-                    }
-                    else if (!TextHelper.Exists(artist.EmailAddress))
-                    {
-                        // set the message
-                        message = "EmailAddress is required.";
-                    }
-                    else if (!TextHelper.Exists(password))
-                    {
-                        // set the message
-                        message = "Password is required.";
-                    }
-                    else if (!TextHelper.Exists(confirmPassword))
-                    {
-                        // set the message
-                        message = "Confirm Password is required.";
-                    }
-                }
-                
-                // return value
-                return isValid;
             }
             #endregion
             
@@ -908,6 +863,23 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region HasIndexPage
+            /// <summary>
+            /// This property returns true if this object has an 'IndexPage'.
+            /// </summary>
+            public bool HasIndexPage
+            {
+                get
+                {
+                    // initial value
+                    bool hasIndexPage = (this.IndexPage != null);
+                    
+                    // return value
+                    return hasIndexPage;
+                }
+            }
+            #endregion
+            
             #region HasLoginResponse
             /// <summary>
             /// This property returns true if this object has a 'LoginResponse'.
@@ -972,6 +944,31 @@ namespace BlazorImageGallery.Components
                     
                     // return value
                     return hasSignUp;
+                }
+            }
+            #endregion
+
+            #region IndexPage
+            /// <summary>
+            /// This read only property returns the Parent of this component, cast as an Index object.
+            /// Always check for null before referring to this object as it may not exist.
+            /// </summary>
+            public BlazorImageGallery.Pages.Index IndexPage
+            {
+                get
+                {
+                    // initial value
+                    BlazorImageGallery.Pages.Index indexPage = null;
+
+                    // if the Parent object exists
+                    if (HasParent)
+                    {
+                        // set the return value
+                        indexPage = Parent as BlazorImageGallery.Pages.Index;
+                    }
+
+                    // return value
+                    return indexPage;
                 }
             }
             #endregion
@@ -1082,14 +1079,6 @@ namespace BlazorImageGallery.Components
                 get { return password; }
                 set { password = value; }
             }
-            #endregion
-
-            #region Navigator
-            /// <summary>
-            /// This propery is injected so you can use NavigateTo
-            /// </summary>
-            [Inject]
-            NavigationManager Navigator { get; set; }
             #endregion
             
             #region ProfileImageStyle

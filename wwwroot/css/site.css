@@ -134,6 +134,7 @@
     font-family: Verdana;
     font-weight: 500;
     color: black;
+    
 }
 .clickartist
 {
@@ -200,6 +201,23 @@
     font-family: Verdana;
     font-size: 14px;
 }
+.gallery
+{
+    width: 68%;
+    height: 50vh;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 24vh;
+    left: -3%;
+    margin-top: -48px;
+}
+.gallerytitle
+{
+    font-family: Verdana;
+    font-size: 2.5em;
+    color: black;
+}
 .gearicon 
 {
     background-color: transparent;
@@ -241,6 +259,7 @@
     left: 88%;
     top: 0px;
     color: white;
+    z-index: 100;
 }
 .marginbottom8
 {

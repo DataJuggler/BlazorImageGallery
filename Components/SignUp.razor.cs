@@ -41,7 +41,6 @@ namespace BlazorImageGallery.Components
         private Artist artist;
         private string profileImageUrl;
         private string profileImageStyle;
-        private bool showUploadButton;
         private bool showProfileMenu;
         private bool rememberLogin;
         private ProgressBar progressBar;
@@ -74,8 +73,15 @@ namespace BlazorImageGallery.Components
             /// </summary>
             private void Cancel()
             {  
-                // Update the UI
-                StateHasChanged();
+                // if the value for HasParentLoginComponent is true
+                if ((HasParentLoginComponent) && (ParentLoginComponent.HasIndexPage))
+                {
+                    // Turn off
+                    ParentLoginComponent.IndexPage.LoginOrSignUpInProgress = false;
+
+                    // Cancel, and reset the UI
+                    ParentLoginComponent.Cancel();
+                }                
             }
             #endregion
 
@@ -287,10 +293,6 @@ namespace BlazorImageGallery.Components
                                 // The SignUp is complete
                                 SignUpComplete = true;
                             }
-                        }
-                        else
-                        {
-                            abort = true;
                         }
                     }
                 }
@@ -583,6 +585,23 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region HasParentLoginComponent
+            /// <summary>
+            /// This property returns true if this object has a 'ParentLoginComponent'.
+            /// </summary>
+            public bool HasParentLoginComponent
+            {
+                get
+                {
+                    // initial value
+                    bool hasParentLoginComponent = (this.ParentLoginComponent != null);
+                    
+                    // return value
+                    return hasParentLoginComponent;
+                }
+            }
+            #endregion
+            
             #region HasProgressBar
             /// <summary>
             /// This property returns true if this object has a 'ProgressBar'.
@@ -701,6 +720,25 @@ namespace BlazorImageGallery.Components
                 }
             }
             #endregion
+
+            #region ParentLoginComponent
+            /// <summary>
+            /// This read only property returns the Login component
+            /// by casting the Parent IBlazorComponent as a
+            /// Login object.
+            /// </summary>
+            public Login ParentLoginComponent
+            {
+                get
+                {   
+                    // initial value
+                    Login login = this.Parent as Login;
+
+                    // return value
+                    return login;
+                }
+            }
+            #endregion
             
             #region Password
             /// <summary>
@@ -768,17 +806,6 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
-            #region ShowUploadButton
-            /// <summary>
-            /// This property gets or sets the value for 'ShowUploadButton'.
-            /// </summary>
-            public bool ShowUploadButton
-            {
-                get { return showUploadButton; }
-                set { showUploadButton = value; }
-            }
-            #endregion
-
             #region SignUpCallback
             /// <summary>
             /// This property gets or sets the value for 'SignUpCallback'.
