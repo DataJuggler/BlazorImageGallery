@@ -19,17 +19,17 @@ else
         }
         @if (IsArtistGalleryOwner)
         {
-            <div class="">
-            Upload Images<br  />
-            <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
-                ShowStatus="false"  PartialGuidLength="10" MaxFileSize="4194304" FilterByExtension="true" 
-                ShowCustomButton="true" ButtonText="Upload" CustomButtonClassName="button" 
-                AllowedExtensions=".jpg;.png;" ShowResetButton="true" ResetButtonClassName="button"
-                OnReset="OnReset" ResetButtonText="New" UploadFolder="wwwroot/images/artists"
-                CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
-                InputFileClassName="customfileupload" FileTooLargeMessage="The file uploaded must be 4 megabytes or smaller.">
-            </FileUpload>
-        </div>     
+            <span class="text-white">Upload Images</span>
+            <div class="moveleft16">                
+                <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
+                    ShowStatus="false"  PartialGuidLength="10" MaxFileSize="4194304" FilterByExtension="true" 
+                    ShowCustomButton="true" ButtonText="Upload" CustomButtonClassName="localbutton" 
+                    AllowedExtensions=".jpg;.png;" ShowResetButton="true" ResetButtonClassName="localbutton"
+                    OnReset="OnReset" ResetButtonText="New" UploadFolder="wwwroot/images/artists"
+                    CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
+                    InputFileClassName="customfileupload" FileTooLargeMessage="The file uploaded must be 4 megabytes or smaller.">
+                </FileUpload>
+            </div>     
         }
     </div>
 }

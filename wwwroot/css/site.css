@@ -1,5 +1,30 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.absoluterightneg64
+{
+    position: absolute;
+    right: -64px;
+}
+.absoluteright16
+{
+    position: absolute;
+    right: 16px;
+}
+.absoluteright80
+{
+    position: absolute;
+    right: 80px;
+}
+.absoluteright120
+{
+    position: absolute;
+    right: 120px;
+}
+.absolutetopneg16
+{
+    position: absolute;
+    top: -24%;
+}
 .artistname
 {
     display: block;
@@ -68,69 +93,6 @@
     position: relative;
     top: 20px;    
     vertical-align: top;
-}
-.button 
-{
-    display: inline-block;
-    margin-right: -8px;
-    margin-left: 0px;
-    margin-top: -8px;
-    border: none;
-    text-decoration: none;
-    font-family: Verdana;
-    font-size: 20px;
-    font-weight: 300;
-    color: white;
-    text-align: center;
-    transition: all 0.2s;
-    width: 120px;
-    height: 48px;
-    background-image: url('../images/buttons/blackbutton.jpg');
-    transform: scale(0.5);
-    transform-origin: left;    
-    cursor: pointer;
-}
-
-.buttonnarrow
-{
-    display: inline-block;
-    margin-right: -8px;
-    margin-left: 0px;
-    margin-top: -8px;
-    border: none;
-    text-decoration: none;
-    font-family: Verdana;
-    font-size: 20px;
-    font-weight: 300;
-    color: white;
-    text-align: center;
-    transition: all 0.2s;
-    width: 96px !important;
-    max-width: 96px !important;
-    height: 48px;
-    background-image: url('../images/buttons/blackbuttonnarrow.jpg');
-    transform: scale(0.25);
-    transform-origin: left;    
-}
-.buttonwide
-{
-    display: inline-block;
-    margin-right: -16px;
-    margin-left: 0px;
-    margin-top: -8px;
-    border: none;
-    text-decoration: none;
-    font-family: Verdana;
-    font-size: 20px;
-    font-weight: 300;
-    color: white;
-    text-align: center;
-    transition: all 0.2s;
-    width: 160px;
-    height: 48px;
-    background-image: url('../images/buttons/BlackButtonWide.jpg');  
-    transform: scale(0.5);
-    transform-origin: left;    
 }
 .clear
 {
@@ -224,6 +186,10 @@
     font-family: Verdana;
     font-size: 14px;
 }
+.frontscreen
+{
+    z-index: 100;
+}
 .gallery
 {
     width: 68%;
@@ -233,7 +199,6 @@
     position: relative;
     top: 24vh;
     left: -3%;
-    margin-top: -48px;
 }
 .gallerytitle
 {
@@ -243,11 +208,12 @@
 }
 .gearicon 
 {
+    display: inline-block;
+    position: absolute;
+    right: 54px;
+    top: -16px;
     background-color: transparent;
     border: none;
-    position: fixed;
-    left: 90.0%;
-    top: 0%;
     width: 64px;
     height: 64px;
     margin-left: 8px;
@@ -255,6 +221,10 @@
     background-repeat: no-repeat;
     transform: scale(0.5);
     transform-origin: left;    
+}
+.gearicon:focus
+{
+    outline: none;
 }
 .height48
 {
@@ -272,14 +242,124 @@
     text-align: center;
     vertical-align: central;
 }
+.inlineblock
+{  
+    display: inline-block;
+}
+.inlineflex
+{
+    display: inline-flex;
+    justify-content: right;
+}
+.justifyright
+{
+    justify-content: right;
+}
 .linknounderline
 {
     text-decoration: none;
 }
+.localbutton 
+{
+    display: inline-block;
+    margin-right: -8px;
+    margin-left: 16px;
+    margin-top: -8px;
+    border: none;
+    text-decoration: none;
+    font-family: Verdana;
+    font-size: 20px;
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    transition: all 0.2s;
+    width: 120px;
+    height: 48px;
+    background-image: url('../images/buttons/blackbutton.jpg');
+    transform: scale(.6);
+    transform-origin: left;    
+    cursor: pointer;
+}
+.localbuttonnarrow
+{
+    display: inline-block;
+    margin-right: -8px;
+    margin-left: 16px;
+    margin-top: -8px;
+    border: none;
+    text-decoration: none;
+    font-family: Verdana;
+    font-size: 20px;
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    transition: all 0.2s;
+    width: 96px !important;
+    max-width: 96px !important;
+    height: 48px;
+    background-image: url('../images/buttons/blackbuttonnarrow.jpg');
+    transform: scale(.6);
+    transform-origin: left;    
+}
+.localbuttonbuttonmedium
+{
+    display: inline-block;
+    margin-right: 0px;
+    margin-left: 0px;
+    border: none;
+    text-decoration: none;
+    font-family: Verdana;
+    font-size: 20px;
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    text-wrap: none;
+    transition: all 0.2s;
+    width: 140px;
+    height: 48px;
+    background-image: url('../images/buttons/BlackButtonMediumWide.jpg');      
+    transform: scale(.6);
+    transform-origin: left;    
+}
+.localbuttonwide
+{
+    display: inline-block;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: -8px;
+    border: none;
+    text-decoration: none;
+    font-family: Verdana;
+    font-size: 20px;
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    text-wrap: none;
+    transition: all 0.2s;
+    width: 160px;
+    height: 48px;
+    background-image: url('../images/buttons/BlackButtonWide.jpg');  
+    transform: scale(.6);
+    transform-origin: left;    
+}
+.loggedinuser
+{
+    display: inline-block;
+    color: white;
+    width: 640px;
+    height: 32px;
+    justify-content: right;    
+    vertical-align: central;
+    align-content: center;
+    vertical-align: central;
+    position: fixed;
+    right: 2%;
+}
 .logincontrol 
 {
+    justify-content: left;
     position: relative;
-    left: 88%;
+    left: 84%;
     top: 0px;
     color: white;
     z-index: 100;
@@ -340,6 +420,11 @@
 {
     position: relative;
     top: 64px;
+}
+.moveleft16
+{
+    position: relative;
+    left: -16px;
 }
 .moveleft48
 {
@@ -479,9 +564,8 @@
 }
 .progresscontainer2
 {
-    position: fixed;
-    left: 34%;
-    top: 60%;
+    position: relative;
+    top: 32px;
 }
 .right12percent
 {
@@ -496,8 +580,11 @@
 {
     position: fixed;
     top: 80%;
-    left: 20%;
-    color: orange;
+    left: 20%;    
+}
+.textright
+{
+    text-align: right;
 }
 .welcome 
 {
@@ -511,6 +598,20 @@
     margin-left: -275px; /* Half the width */
     /*transform: scale(0.75);
     transform-origin: left;*/
+}
+.welcomemessage
+{
+    text-align: right;
+    position: absolute;
+    right: 128px;
+    top: 4px;
+    vertical-align: central;
+    font-size: 14px;
+    font-family: Verdana;
+}
+.width640
+{
+    width: 640px;
 }
 
 input[type=file], /* FF, IE7+, chrome (except button) */

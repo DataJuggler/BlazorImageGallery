@@ -31,10 +31,10 @@
             Profile Picture<br  />
             <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
                 ShowStatus="false"  PartialGuidLength="10" MaxFileSize="1048576" FilterByExtension="true" 
-                ShowCustomButton="true" ButtonText="Select File" ResetButtonClassName="button" 
-                UploadFolder="wwwroot/images/artists" CustomButtonClassName="buttonwide"
+                ShowCustomButton="true" ButtonText="Select File" ResetButtonClassName="localbutton" 
+                UploadFolder="wwwroot/images/artists" CustomButtonClassName="localbuttonwide"
                 AllowedExtensions=".jpg;.png;" ShowResetButton="true" OnReset="OnReset" ResetButtonText="Change"
-                CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
+                CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true" 
                 RequiredHeight="256" RequiredWidth="256" CustomRequiredSizeMessage="File must be 256 x 256."
                 InputFileClassName="customfileupload" FileTooLargeMessage="The file uploaded must be 1 megabyte or smaller.">
             </FileUpload>
@@ -45,15 +45,15 @@
         </div>
         <div class="progresscontainer">
              <ProgressBar ShowBackground="true" BackgroundImageUrl="" 
-                BackgroundColor="#02075d" Subscriber=this Increment="30" Interval="500"
-                BubbleScale=".6" BackgroundWidth="272" BackgroundHeight="60" BubbleOffSet="16"
-                BackgroundScale=".8"
+                BackgroundColor="#02075d" Subscriber=this Increment="30" 
+                BubbleScale=".6" BackgroundWidth="240" BackgroundHeight="60" 
+                BackgroundScale=".8" Interval="500" BubbleOffSet="16"
                 Theme="DataJuggler.Blazor.Components.Enumerations.ThemeEnum.Spheres">
             </ProgressBar>
         </div>
-        <div>
-            <button class="button " @onclick="HandleNewUserSignUp">Sign Up</button>
-            <button class="button moveleft48" @onclick="Cancel">Cancel</button>
+        <div class="moveleft16">
+            <button class="localbutton" @onclick="HandleNewUserSignUp">Sign Up</button>
+            <button class="localbutton moveleft48" @onclick="Cancel">Cancel</button>
         </div>
     </div>
 </div>
