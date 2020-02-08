@@ -32,7 +32,7 @@
             <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
                 ShowStatus="false"  PartialGuidLength="10" MaxFileSize="1048576" FilterByExtension="true" 
                 ShowCustomButton="true" ButtonText="Select File" ResetButtonClassName="button" 
-                UploadFolder="wwwroot/images/artists" CustomButtonClassName="button"
+                UploadFolder="wwwroot/images/artists" CustomButtonClassName="buttonwide"
                 AllowedExtensions=".jpg;.png;" ShowResetButton="true" OnReset="OnReset" ResetButtonText="Change"
                 CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
                 RequiredHeight="256" RequiredWidth="256" CustomRequiredSizeMessage="File must be 256 x 256."
@@ -44,8 +44,10 @@
             <div class="@ProfileImageStyle"></div>
         </div>
         <div class="progresscontainer">
-             <ProgressBar ShowBackground="false" Subscriber=this Increment="30" Interval="500"
-                BubbleScale=".4" BackgroundWidth="272" BackgroundHeight="60" BubbleOffSet="16"
+             <ProgressBar ShowBackground="true" BackgroundImageUrl="" 
+                BackgroundColor="#02075d" Subscriber=this Increment="30" Interval="500"
+                BubbleScale=".6" BackgroundWidth="272" BackgroundHeight="60" BubbleOffSet="16"
+                BackgroundScale=".8"
                 Theme="DataJuggler.Blazor.Components.Enumerations.ThemeEnum.Spheres">
             </ProgressBar>
         </div>

@@ -236,7 +236,7 @@ namespace BlazorImageGallery.Components
                     }
 
                     // set the artistPath
-                    string artistPath = Path.Combine("Images/Gallery", displayName.Replace(" ", ""));
+                    string artistPath = Path.Combine("wwwroot/Images/Gallery", displayName.Replace(" ", ""));
 
                     // saves going to the database to lookup if the artist exists
                     if (Directory.Exists(artistPath))
