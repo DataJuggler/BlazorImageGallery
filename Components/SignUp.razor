@@ -31,7 +31,8 @@
             Profile Picture<br  />
             <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
                 ShowStatus="false"  PartialGuidLength="10" MaxFileSize="1048576" FilterByExtension="true" 
-                ShowCustomButton="true" ButtonText="Select File" ButtonClassName="button" UploadFolder="wwwroot/images/artists"
+                ShowCustomButton="true" ButtonText="Select File" ResetButtonClassName="button" 
+                UploadFolder="wwwroot/images/artists" CustomButtonClassName="button"
                 AllowedExtensions=".jpg;.png;" ShowResetButton="true" OnReset="OnReset" ResetButtonText="Change"
                 CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
                 RequiredHeight="256" RequiredWidth="256" CustomRequiredSizeMessage="File must be 256 x 256."

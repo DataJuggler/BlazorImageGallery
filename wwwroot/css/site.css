@@ -88,6 +88,29 @@
     background-image: url('../images/buttons/blackbutton.jpg');
     transform: scale(0.5);
     transform-origin: left;    
+    cursor: pointer;
+}
+
+.buttonnarrow
+{
+    display: inline-block;
+    margin-right: -8px;
+    margin-left: 0px;
+    margin-top: -8px;
+    border: none;
+    text-decoration: none;
+    font-family: Verdana;
+    font-size: 20px;
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    transition: all 0.2s;
+    width: 96px !important;
+    max-width: 96px !important;
+    height: 48px;
+    background-image: url('../images/buttons/blackbuttonnarrow.jpg');
+    transform: scale(0.25);
+    transform-origin: left;    
 }
 .buttonwide
 {
