@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ObjectLibrary.BusinessObjects;
 using DataJuggler.UltimateHelper.Core;
 using BlazorImageGallery.Pages;
+using DataGateway.Services;
 
 #endregion
 
@@ -23,7 +24,7 @@ namespace BlazorImageGallery.Util
     {
 
         #region Private Variables
-        private Artist artist;
+        private Artist artist;       
         private Artist selectedArtist;
         private List<Artist> artists;
         private Index indexPage;
@@ -107,21 +108,36 @@ namespace BlazorImageGallery.Util
             /// <summary>
             /// This method Set Selected Artist
             /// </summary>
-            public void SetSelectedArtist(int positionNumber, int pageIndex)
+            public async void SetSelectedArtist(int positionNumber, int pageIndex)
             {
-                // if there is a collection of selected artists
-                if (ListHelper.HasOneOrMoreItems(Artists))
+                try
                 {
-                    // set the index
-                    int index = (pageIndex * 5) + positionNumber - 1;
-
-                    // verify this value is in range
-                    if ((index >= 0) && (index < Artists.Count))
+                    // if there is a collection of selected artists
+                    if (ListHelper.HasOneOrMoreItems(Artists))
                     {
-                        // Set the SelectedArtist
-                        this.SelectedArtist = Artists[index];                       
-                    }
-                }               
+                        // set the index
+                        int index = (pageIndex * 5) + positionNumber - 1;
+
+                        // verify this value is in range
+                        if ((index >= 0) && (index < Artists.Count))
+                        {
+                            // Set the SelectedArtist
+                            this.SelectedArtist = Artists[index];    
+                        
+                            // if the value for HasIndexPage is true
+                            if ((HasIndexPage) && (HasSelectedArtist))
+                            {
+                                // load the images for this artist
+                                SelectedArtist.Images = await IndexPage.LoadImagesForArtist(SelectedArtist.Id);
+                            }
+                        }
+                    }    
+                }
+                catch (System.Exception error)
+                {
+                    // for debugging only
+                    DebugHelper.WriteDebugError("SetSelectedArtist", "GalleryManager", error);
+                }
             }
             #endregion
             

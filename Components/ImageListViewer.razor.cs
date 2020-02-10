@@ -10,6 +10,7 @@ using ObjectLibrary.BusinessObjects;
 using Microsoft.AspNetCore.Components;
 using BlazorImageGallery.Util;
 using DataJuggler.Blazor.FileUpload;
+using DataGateway.Services;
 
 #endregion
 
@@ -26,7 +27,7 @@ namespace BlazorImageGallery.Components
         #region Private Variables
         private Image selectedImage;
         private string selectedImageCSS;
-        private string message;
+        private string message;       
         #endregion
 
         #region Methods
@@ -36,7 +37,7 @@ namespace BlazorImageGallery.Components
             /// This method is called by DataJuggler.Blazor.FileUpload after a file is uploaded.
             /// </summary>
             /// <param name="uploadedFileInfo"></param>
-            private void OnFileUploaded(UploadedFileInfo uploadedFileInfo)
+            private async void OnFileUploaded(UploadedFileInfo uploadedFileInfo)
             {
                 // if aborted
                 if (uploadedFileInfo.Aborted)
@@ -46,20 +47,35 @@ namespace BlazorImageGallery.Components
                 }
                 else
                 {
-                    //// get the status
-                    //// status = "The file " + uploadedFileInfo.FullName + " was uploaded.";
+                    // if the value for HasArtist is true
+                    if (HasArtist)
+                    {
+                        // Create a new instance of an 'Image' object.
+                        Image image = new Image();
 
-                    //// other information about the file is available
-                    //DateTime lastModified = uploadedFileInfo.LastModified;
-                    //string nameAsItIsOnDisk = uploadedFileInfo.NameWithPartialGuid;
-                    //string partialGuid = uploadedFileInfo.PartialGuid;
-                    //long size = uploadedFileInfo.Size;
-                    //string type = uploadedFileInfo.Type;
+                        // set the image properties
+                        image.Name = uploadedFileInfo.Name;
+                        image.OwnerId = Artist.Id;
+                        image.CreatedDate = DateTime.Now;
+                        image.Extension = uploadedFileInfo.Extension;
+                        image.FileSize = (int) uploadedFileInfo.Size;
+                        image.FullPath = uploadedFileInfo.FullPath;
+                        image.Height = uploadedFileInfo.Height;
+                        image.Width = uploadedFileInfo.Width;
+                        image.SitePath = uploadedFileInfo.FullPath;
+                        image.ImageUrl = "../Images/Gallery/" + Artist.Name + "/" + uploadedFileInfo.Name;
+                        image.Visible = true;
 
-                    // Set the ProfileImageUrl
-                    // ProfileImageUrl = "../images/artists/" + uploadedFileInfo.FullName;
+                        // perform the save
+                        bool saved = await ImageService.SaveImage(ref image);
 
-                    
+                        // if saved
+                        if (saved)
+                        {
+                            // Set the message
+                            this.Message = "Image Saved.";
+                        }
+                    }
                 }
 
                 // Refresh the UI
@@ -157,6 +173,30 @@ namespace BlazorImageGallery.Components
                     
                     // return value
                     return galleryTitle;
+                }
+            }
+            #endregion
+
+            #region GalleryUploadPath
+            /// <summary>
+            /// This read only property returns the path to upload too
+            /// </summary>
+            public string GalleryUploadPath
+            {
+                get
+                {
+                    // initial value
+                    string galleryPath = "";
+
+                    // if the value for HasArtist is true
+                    if (HasArtist)
+                    {
+                        // get the path for this gallery
+                        galleryPath = "wwwroot/images/gallery/" + Artist.Name.Replace(" ", "");
+                    }
+
+                    // return value
+                    return galleryPath;
                 }
             }
             #endregion
@@ -263,6 +303,23 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region HasSelectedArtist
+            /// <summary>
+            /// This property returns true if this object has a 'SelectedArtist'.
+            /// </summary>
+            public bool HasSelectedArtist
+            {
+                get
+                {
+                    // initial value
+                    bool hasSelectedArtist = (this.SelectedArtist != null);
+                    
+                    // return value
+                    return hasSelectedArtist;
+                }
+            }
+            #endregion
+            
             #region HasSelectedImage
             /// <summary>
             /// This property returns true if this object has a 'SelectedImage'.
@@ -336,6 +393,30 @@ namespace BlazorImageGallery.Components
             {
                 get { return message; }
                 set { message = value; }
+            }
+            #endregion
+
+            #region SelectedArtist
+            /// <summary>
+            /// This read only property 
+            /// </summary>
+            public Artist SelectedArtist
+            {
+                get
+                {
+                    // initial value
+                    Artist selectedArtist = null;
+
+                    // if the GalleryManager exists
+                    if (HasGalleryManager)
+                    {
+                        // Set the selectedArtist
+                        selectedArtist = GalleryManager.SelectedArtist;
+                    }
+
+                    // return value
+                    return selectedArtist;
+                }
             }
             #endregion
             
@@ -418,30 +499,6 @@ namespace BlazorImageGallery.Components
                 }
             }
             #endregion
-        
-            #region SelectedArtist
-            /// <summary>
-            /// This read only property 
-            /// </summary>
-            public Artist SelectedArtist
-            {
-                get
-                {
-                    // initial value
-                    Artist selectedArtist = null;
-
-                    // if the GalleryManager exists
-                    if (HasGalleryManager)
-                    {
-                        // Set the selectedArtist
-                        selectedArtist = GalleryManager.SelectedArtist;
-                    }
-
-                    // return value
-                    return selectedArtist;
-                }
-            }
-        #endregion
 
         #endregion
 

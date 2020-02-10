@@ -96,27 +96,17 @@ namespace BlazorImageGallery.Pages
             }
             #endregion
             
-            #region LoadImagesForArtist()
+            #region LoadImagesForArtist(int artistId)
             /// <summary>
             /// This method returns a list of Images For Artist
             /// </summary>
-            public async Task<List<Image>> LoadImagesForArtist()
+            public async Task<List<Image>> LoadImagesForArtist(int artistId)
             {
                 // initial value
                 List<Image> images = null;
-
-                // if the Artist exists and the ArtistId is set
-                if ((HasArtist) && (Artist.IsNew))
-                {
-                    // initial value
-                    images = await ImageService.GetImageList(Artist.Id);
-
-                    // Create the dataWatcher
-                    ImageDataWatcher dataWatcher = new ImageDataWatcher();
-
-                    // Watch these to
-                    dataWatcher.Watch(images);
-                }
+                
+                // initial value
+                images = await ImageService.GetImageList(artistId);
 
                 // return the list              
                 return images;
@@ -142,20 +132,17 @@ namespace BlazorImageGallery.Pages
                         // Set the artist
                         this.Artist = loginResponse.Artist;
 
-                        // if the value for HasArtist is true
-                        if (HasArtist)
+                        // if we do not have a Gallerymanager
+                        if (!HasGalleryManager)                        
                         {
-                            // Load the images
-                            Artist.Images = await LoadImagesForArtist();
+                            // Create a new instance of a 'GalleryManager' object.
+                            this.GalleryManager = new GalleryManager(this);
                         }
-
-                        // Create a new instance of a 'GalleryManager' object.
-                        this.GalleryManager = new GalleryManager(this);
 
                         // Set the Artist
                         this.GalleryManager.Artist = this.Artist;
 
-                        // Load the Artists
+                        // Load the Artists in case this is a new artist
                         this.GalleryManager.Artists = await ArtistService.GetArtistList();
 
                         // Call Refresh
@@ -340,6 +327,23 @@ namespace BlazorImageGallery.Pages
                     
                     // return value
                     return hasChildren;
+                }
+            }
+            #endregion
+            
+            #region HasGalleryManager
+            /// <summary>
+            /// This property returns true if this object has a 'GalleryManager'.
+            /// </summary>
+            public bool HasGalleryManager
+            {
+                get
+                {
+                    // initial value
+                    bool hasGalleryManager = (this.GalleryManager != null);
+                    
+                    // return value
+                    return hasGalleryManager;
                 }
             }
             #endregion

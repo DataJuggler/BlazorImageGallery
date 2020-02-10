@@ -1,4 +1,7 @@
-﻿@if (ShowWelcomeMessage)
+﻿@using ObjectLibrary.BusinessObjects
+@using DataJuggler.Blazor.Components
+
+@if (ShowWelcomeMessage)
 {
     <div class="welcome"></div>
 }
@@ -17,19 +20,37 @@ else
                 @Message
             </div>
         }
-        @if (IsArtistGalleryOwner)
+        @if  (HasSelectedArtist)
         {
-            <span class="text-white">Upload Images</span>
-            <div class="moveleft16">                
-                <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
-                    ShowStatus="false"  PartialGuidLength="10" MaxFileSize="4194304" FilterByExtension="true" 
-                    ShowCustomButton="true" ButtonText="Upload" CustomButtonClassName="localbutton" 
-                    AllowedExtensions=".jpg;.png;" ShowResetButton="true" ResetButtonClassName="localbutton"
-                    OnReset="OnReset" ResetButtonText="New" UploadFolder="wwwroot/images/artists"
-                    CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
-                    InputFileClassName="customfileupload" FileTooLargeMessage="The file uploaded must be 4 megabytes or smaller.">
-                </FileUpload>
-            </div>     
+            <div class="height32">
+                @if (IsArtistGalleryOwner)
+                {  
+                    <div class="uploadcontrol">                
+                        <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
+                            ShowStatus="false"  PartialGuidLength="10" MaxFileSize="4194304" FilterByExtension="true" 
+                            ShowCustomButton="true" ButtonText="Upload" CustomButtonClassName="localbutton" 
+                            AllowedExtensions=".jpg;.png;" ShowResetButton="true" ResetButtonClassName="localbutton"
+                            OnReset="OnReset" ResetButtonText="New" UploadFolder="@GalleryUploadPath"
+                            CustomExtensionMessage="Only .jpg and .png files are allowed." AppendPartialGuid="true"                
+                            InputFileClassName="customfileupload" FileTooLargeMessage="The file uploaded must be 4 megabytes or smaller.">
+                        </FileUpload>
+                    </div>     
+                    <span class="uploadcontrolmessage">Upload Images</span>
+                }
+            </div>            
+            <div class="galleryimages">
+                @if (SelectedArtist.HasImages)
+                {
+                    <div class="inlineblock">
+                        @foreach (Image image in SelectedArtist.Images)
+                        {
+                            <Sprite Scale=".1" Height="@image.Height" Width="@image.Width"
+                                ImageUrl="@image.ImageUrl">
+                            </Sprite>
+                        }
+                    </div>
+                }
+            </div>
         }
     </div>
 }

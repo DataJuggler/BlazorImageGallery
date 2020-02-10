@@ -161,11 +161,11 @@
     bottom: 12px;
     color: darkgray;
 }
-.fontarial12
+.fontarial14
 {
     font-family: Arial;
-    font-size: 12px;
-    color: White;
+    font-size: 14px;
+    color: black;
     text-align: Center;
 }
 .footer
@@ -200,11 +200,22 @@
     top: 24vh;
     left: -3%;
 }
+.galleryimages
+{
+    position: fixed;
+    left: 14%;
+    top: 40vh;
+    width: 68%;
+    height: 36vh;
+}
 .gallerytitle
 {
     font-family: Verdana;
     font-size: 2.5em;
     color: black;
+    position: fixed;
+    left: 14%;
+    top: 24vh;
 }
 .gearicon 
 {
@@ -226,21 +237,16 @@
 {
     outline: none;
 }
-.height48
+.height32
 {
-    height: 48px;
-    min-height: 48px;
-    max-height: 48px;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
     text-align: center;
     vertical-align: central;
-}
-.height80
-{
-    height: 80px;
-    min-height: 80px;
-    max-height: 80px;
-    text-align: center;
-    vertical-align: central;
+    position: relative;
+    top: 0px;
+    left: 0px;
 }
 .inlineblock
 {  
@@ -250,6 +256,15 @@
 {
     display: inline-flex;
     justify-content: right;
+}
+.inlinetext
+{
+    display: inline;
+    text-align: left;
+}
+.justifyleft
+{
+    justify-content: left;
 }
 .justifyright
 {
@@ -461,6 +476,11 @@
     position: relative;
     left: 32px;
 }
+.moveright60
+{
+    position: relative;
+    left: 60px;
+}
 .moveup4
 {
     position: relative;
@@ -475,6 +495,11 @@
 {
     position: relative;
     top: -32px;
+}
+.moveup40
+{
+    position: relative;
+    top: -40px;
 }
 .moveup48
 {
@@ -585,6 +610,25 @@
 .textright
 {
     text-align: right;
+}
+.textweight500
+{
+    font-weight: 500;
+}
+.uploadcontrol
+{
+    position: absolute;
+    left: -16px;
+    top: 40px;
+}
+.uploadcontrolmessage
+{
+    position: absolute;
+    left: 80px;
+    top: 44px;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: 500;
 }
 .welcome 
 {
