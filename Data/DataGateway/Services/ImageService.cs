@@ -38,6 +38,8 @@ namespace DataGateway.Services
                 
                 // load the sites
                 list = gateway.LoadImagesForOwnerId(artistId);
+
+                
                 
                 // return the list
                 return Task.FromResult(list);

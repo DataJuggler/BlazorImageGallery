@@ -6,7 +6,7 @@ Go
 -- =========================================================
 -- Procure Name: Artist_Insert
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Insert a new Artist
 -- =========================================================
 
@@ -73,7 +73,7 @@ Go
 -- =========================================================
 -- Procure Name: Artist_Update
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Update an existing Artist
 -- =========================================================
 
@@ -149,7 +149,7 @@ Go
 -- =========================================================
 -- Procure Name: Artist_Find
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Find an existing Artist
 -- =========================================================
 
@@ -206,7 +206,7 @@ Go
 -- =========================================================
 -- Procure Name: Artist_Delete
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Delete an existing Artist
 -- =========================================================
 
@@ -260,7 +260,7 @@ Go
 -- =========================================================
 -- Procure Name: Artist_FetchAll
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Returns all Artist objects
 -- =========================================================
 
@@ -311,7 +311,7 @@ Go
 -- =========================================================
 -- Procure Name: Image_Insert
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Insert a new Image
 -- =========================================================
 
@@ -347,6 +347,7 @@ Create PROCEDURE Image_Insert
     @FileSize int,
     @FullPath nvarchar(512),
     @Height int,
+    @ImageNumber int,
     @ImageUrl nvarchar(255),
     @Name nvarchar(40),
     @OwnerId int,
@@ -363,10 +364,10 @@ BEGIN
 
     -- Begin Insert Statement
     Insert Into [Image]
-    ([CreatedDate],[Extension],[FileSize],[FullPath],[Height],[ImageUrl],[Name],[OwnerId],[SitePath],[Visible],[Width])
+    ([CreatedDate],[Extension],[FileSize],[FullPath],[Height],[ImageNumber],[ImageUrl],[Name],[OwnerId],[SitePath],[Visible],[Width])
 
     -- Begin Values List
-    Values(@CreatedDate, @Extension, @FileSize, @FullPath, @Height, @ImageUrl, @Name, @OwnerId, @SitePath, @Visible, @Width)
+    Values(@CreatedDate, @Extension, @FileSize, @FullPath, @Height, @ImageNumber, @ImageUrl, @Name, @OwnerId, @SitePath, @Visible, @Width)
 
     -- Return ID of new record
     SELECT SCOPE_IDENTITY()
@@ -379,7 +380,7 @@ Go
 -- =========================================================
 -- Procure Name: Image_Update
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Update an existing Image
 -- =========================================================
 
@@ -416,6 +417,7 @@ Create PROCEDURE Image_Update
     @FullPath nvarchar(512),
     @Height int,
     @Id int,
+    @ImageNumber int,
     @ImageUrl nvarchar(255),
     @Name nvarchar(40),
     @OwnerId int,
@@ -439,6 +441,7 @@ BEGIN
     [FileSize] = @FileSize,
     [FullPath] = @FullPath,
     [Height] = @Height,
+    [ImageNumber] = @ImageNumber,
     [ImageUrl] = @ImageUrl,
     [Name] = @Name,
     [OwnerId] = @OwnerId,
@@ -457,7 +460,7 @@ Go
 -- =========================================================
 -- Procure Name: Image_Find
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Find an existing Image
 -- =========================================================
 
@@ -498,7 +501,7 @@ BEGIN
     SET NOCOUNT ON
 
     -- Begin Select Statement
-    Select [CreatedDate],[Extension],[FileSize],[FullPath],[Height],[Id],[ImageUrl],[Name],[OwnerId],[SitePath],[Visible],[Width]
+    Select [CreatedDate],[Extension],[FileSize],[FullPath],[Height],[Id],[ImageNumber],[ImageUrl],[Name],[OwnerId],[SitePath],[Visible],[Width]
 
     -- From tableName
     From [Image]
@@ -514,7 +517,7 @@ Go
 -- =========================================================
 -- Procure Name: Image_Delete
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Delete an existing Image
 -- =========================================================
 
@@ -568,7 +571,7 @@ Go
 -- =========================================================
 -- Procure Name: Image_FetchAll
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Returns all Image objects
 -- =========================================================
 
@@ -606,7 +609,7 @@ BEGIN
     SET NOCOUNT ON
 
     -- Begin Select Statement
-    Select [CreatedDate],[Extension],[FileSize],[FullPath],[Height],[Id],[ImageUrl],[Name],[OwnerId],[SitePath],[Visible],[Width]
+    Select [CreatedDate],[Extension],[FileSize],[FullPath],[Height],[Id],[ImageNumber],[ImageUrl],[Name],[OwnerId],[SitePath],[Visible],[Width]
 
     -- From tableName
     From [Image]
@@ -622,7 +625,7 @@ Go
 -- =========================================================
 -- Procure Name: Artist_FindByEmailAddress
 -- Author:           Data Juggler - Data Tier.Net Procedure Generator
--- Create Date:   1/10/2020
+-- Create Date:   2/13/2020
 -- Description:    Find an existing Artist for the EmailAddress given.
 -- =========================================================
 
@@ -670,6 +673,64 @@ BEGIN
 
     -- Find Matching Record
     Where [EmailAddress] = @EmailAddress
+
+END
+
+set ANSI_NULLS ON
+set QUOTED_IDENTIFIER ON
+Go
+-- =========================================================
+-- Procure Name: Image_FetchAllForOwnerId
+-- Author:           Data Juggler - Data Tier.Net Procedure Generator
+-- Create Date:   2/13/2020
+-- Description:    Returns all Image objects for the OwnerId given.
+-- =========================================================
+
+-- Check if the procedure already exists
+IF EXISTS (select * from syscomments where id = object_id ('Image_FetchAllForOwnerId'))
+
+    -- Procedure Does Exist, Drop First
+    BEGIN
+
+        -- Execute Drop
+        Drop Procedure Image_FetchAllForOwnerId
+
+        -- Test if procedure was dropped
+        IF OBJECT_ID('dbo.Image_FetchAllForOwnerId') IS NOT NULL
+
+            -- Print Line Drop Failed
+            PRINT '<<< Drop Failed On Procedure Image_FetchAllForOwnerId >>>'
+
+        Else
+
+            -- Print Line Procedure Dropped
+            PRINT '<<< Drop Suceeded On Procedure Image_FetchAllForOwnerId >>>'
+
+    End
+
+GO
+
+Create PROCEDURE Image_FetchAllForOwnerId
+
+    -- Create @OwnerId Paramater
+    @OwnerId int
+
+
+AS
+BEGIN
+
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON
+
+    -- Begin Select Statement
+    Select [CreatedDate],[Extension],[FileSize],[FullPath],[Height],[Id],[ImageNumber],[ImageUrl],[Name],[OwnerId],[SitePath],[Visible],[Width]
+
+    -- From tableName
+    From [Image]
+
+    -- Load Matching Records
+    Where [OwnerId] = @OwnerId
 
 END
 

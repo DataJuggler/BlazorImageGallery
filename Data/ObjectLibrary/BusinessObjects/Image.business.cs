@@ -14,7 +14,7 @@ namespace ObjectLibrary.BusinessObjects
     {
 
         #region Private Variables
-        private bool loadByOwnerId;
+        private bool loadByOwnerId;        
         #endregion
 
         #region Constructor
@@ -51,7 +51,7 @@ namespace ObjectLibrary.BusinessObjects
                 set { loadByOwnerId = value; }
             }
             #endregion
-
+            
         #endregion
 
     }

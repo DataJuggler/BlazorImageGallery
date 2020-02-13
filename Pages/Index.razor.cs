@@ -107,7 +107,7 @@ namespace BlazorImageGallery.Pages
                 
                 // initial value
                 images = await ImageService.GetImageList(artistId);
-
+                
                 // return the list              
                 return images;
             }

@@ -370,6 +370,32 @@ namespace DataGateway
             }
             #endregion
 
+            #region LoadImagesForOwnerId(int ownerId)
+            /// <summary>
+            /// This method is used to load 'Image' objects for the OwnerId given.
+            /// </summary>
+            public List<Image> LoadImagesForOwnerId(int ownerId)
+            {
+                // initial value
+                List<Image> images = null;
+                
+                // Create a temp Image object
+                Image tempImage = new Image();
+                
+                // Set the value for LoadByOwnerId to true
+                tempImage.LoadByOwnerId = true;
+                
+                // Set the value for OwnerId
+                tempImage.OwnerId = ownerId;
+                
+                // Perform the load
+                images = LoadImages(tempImage);
+                
+                // return value
+                return images;
+            }
+            #endregion
+            
             #region SaveArtist(ref Artist artist)
             /// <summary>
             /// This method is used to save 'Artist' objects.
@@ -480,4 +506,3 @@ namespace DataGateway
     #endregion
 
 }
-

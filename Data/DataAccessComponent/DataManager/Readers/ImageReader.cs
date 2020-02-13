@@ -41,12 +41,13 @@ namespace DataAccessComponent.DataManager.Readers
                 int fullPathfield = 3;
                 int heightfield = 4;
                 int idfield = 5;
-                int imageUrlfield = 6;
-                int namefield = 7;
-                int ownerIdfield = 8;
-                int sitePathfield = 9;
-                int visiblefield = 10;
-                int widthfield = 11;
+                int imageNumberfield = 6;
+                int imageUrlfield = 7;
+                int namefield = 8;
+                int ownerIdfield = 9;
+                int sitePathfield = 10;
+                int visiblefield = 11;
+                int widthfield = 12;
 
                 try
                 {
@@ -57,6 +58,7 @@ namespace DataAccessComponent.DataManager.Readers
                     image.FullPath = DataHelper.ParseString(dataRow.ItemArray[fullPathfield]);
                     image.Height = DataHelper.ParseInteger(dataRow.ItemArray[heightfield], 0);
                     image.UpdateIdentity(DataHelper.ParseInteger(dataRow.ItemArray[idfield], 0));
+                    image.ImageNumber = DataHelper.ParseInteger(dataRow.ItemArray[imageNumberfield], 0);
                     image.ImageUrl = DataHelper.ParseString(dataRow.ItemArray[imageUrlfield]);
                     image.Name = DataHelper.ParseString(dataRow.ItemArray[namefield]);
                     image.OwnerId = DataHelper.ParseInteger(dataRow.ItemArray[ownerIdfield], 0);

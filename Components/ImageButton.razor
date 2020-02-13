@@ -1,0 +1,18 @@
+﻿@using BlazorStyled
+
+<Styled @bind-Classname="@ImageStyle">
+    background-image: url('@ImageUrl'); 
+    width: @WidthPixels;
+    height: @HeightPixels;
+    transform: scale(@Scale);
+    transform-origin: left;   
+    border: 2px solid black;
+    z-index: 1;
+    outline: none;
+    position: absolute;
+    left: @ColumnLeftPixels;
+    top: @RowTopPixels;
+</Styled>
+
+<button class="@ImageStyle" @onclick="Button_Clicked"></button>
+

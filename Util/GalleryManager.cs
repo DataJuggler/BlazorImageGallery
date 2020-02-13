@@ -28,6 +28,8 @@ namespace BlazorImageGallery.Util
         private Artist selectedArtist;
         private List<Artist> artists;
         private Index indexPage;
+        private bool resetDisplay;
+        private int artistPageIndex;
         #endregion
 
         #region Constructor(Index indexPage)
@@ -121,6 +123,9 @@ namespace BlazorImageGallery.Util
                         // verify this value is in range
                         if ((index >= 0) && (index < Artists.Count))
                         {
+                            // Storing this so we can call this again
+                            this.ArtistPageIndex = pageIndex;
+
                             // Set the SelectedArtist
                             this.SelectedArtist = Artists[index];    
                         
@@ -153,6 +158,17 @@ namespace BlazorImageGallery.Util
             {
                 get { return artist; }
                 set { artist = value; }
+            }
+            #endregion
+            
+            #region ArtistPageIndex
+            /// <summary>
+            /// This property gets or sets the value for 'ArtistPageIndex'.
+            /// </summary>
+            public int ArtistPageIndex
+            {
+                get { return artistPageIndex; }
+                set { artistPageIndex = value; }
             }
             #endregion
             

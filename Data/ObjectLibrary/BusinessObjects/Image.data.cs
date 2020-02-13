@@ -23,6 +23,7 @@ namespace ObjectLibrary.BusinessObjects
         private string fullPath;
         private int height;
         private int id;
+        private int imageNumber;
         private string imageUrl;
         private string name;
         private int ownerId;
@@ -181,6 +182,31 @@ namespace ObjectLibrary.BusinessObjects
                 get
                 {
                     return id;
+                }
+            }
+            #endregion
+
+            #region int ImageNumber
+            public int ImageNumber
+            {
+                get
+                {
+                    return imageNumber;
+                }
+                set
+                {
+                    // local
+                    bool hasChanges = (ImageNumber != value);
+
+                    // Set the value
+                    imageNumber = value;
+
+                    // if the Callback exists and changes occurred
+                    if ((HasCallback) && (hasChanges))
+                    {
+                        // Notify the Callback changes have occurred
+                        Callback(this, ChangeTypeEnum.ItemChanged);
+                    }
                 }
             }
             #endregion

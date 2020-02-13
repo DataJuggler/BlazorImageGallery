@@ -204,9 +204,12 @@
 {
     position: fixed;
     left: 14%;
-    top: 40vh;
-    width: 68%;
-    height: 36vh;
+    top: 36vh;
+    width: 70%;
+    height: 40vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
 }
 .gallerytitle
 {
@@ -619,13 +622,13 @@
 {
     position: absolute;
     left: -16px;
-    top: 40px;
+    top: 32px;
 }
 .uploadcontrolmessage
 {
     position: absolute;
     left: 80px;
-    top: 44px;
+    top: 36px;
     font-family: Verdana;
     font-size: 14px;
     font-weight: 500;

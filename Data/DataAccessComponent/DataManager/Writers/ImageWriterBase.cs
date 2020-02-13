@@ -117,7 +117,7 @@ namespace DataAccessComponent.DataManager.Writers
             internal static SqlParameter[] CreateInsertParameters(Image image)
             {
                 // Initial Values
-                SqlParameter[] parameters = new SqlParameter[11];
+                SqlParameter[] parameters = new SqlParameter[12];
                 SqlParameter param = null;
 
                 // verify imageexists
@@ -165,41 +165,47 @@ namespace DataAccessComponent.DataManager.Writers
                     // set parameters[4]
                     parameters[4] = param;
 
-                    // Create [ImageUrl] parameter
-                    param = new SqlParameter("@ImageUrl", image.ImageUrl);
+                    // Create [ImageNumber] parameter
+                    param = new SqlParameter("@ImageNumber", image.ImageNumber);
 
                     // set parameters[5]
                     parameters[5] = param;
 
-                    // Create [Name] parameter
-                    param = new SqlParameter("@Name", image.Name);
+                    // Create [ImageUrl] parameter
+                    param = new SqlParameter("@ImageUrl", image.ImageUrl);
 
                     // set parameters[6]
                     parameters[6] = param;
 
-                    // Create [OwnerId] parameter
-                    param = new SqlParameter("@OwnerId", image.OwnerId);
+                    // Create [Name] parameter
+                    param = new SqlParameter("@Name", image.Name);
 
                     // set parameters[7]
                     parameters[7] = param;
 
-                    // Create [SitePath] parameter
-                    param = new SqlParameter("@SitePath", image.SitePath);
+                    // Create [OwnerId] parameter
+                    param = new SqlParameter("@OwnerId", image.OwnerId);
 
                     // set parameters[8]
                     parameters[8] = param;
 
-                    // Create [Visible] parameter
-                    param = new SqlParameter("@Visible", image.Visible);
+                    // Create [SitePath] parameter
+                    param = new SqlParameter("@SitePath", image.SitePath);
 
                     // set parameters[9]
                     parameters[9] = param;
 
-                    // Create [Width] parameter
-                    param = new SqlParameter("@Width", image.Width);
+                    // Create [Visible] parameter
+                    param = new SqlParameter("@Visible", image.Visible);
 
                     // set parameters[10]
                     parameters[10] = param;
+
+                    // Create [Width] parameter
+                    param = new SqlParameter("@Width", image.Width);
+
+                    // set parameters[11]
+                    parameters[11] = param;
                 }
 
                 // return value
@@ -246,7 +252,7 @@ namespace DataAccessComponent.DataManager.Writers
             internal static SqlParameter[] CreateUpdateParameters(Image image)
             {
                 // Initial Values
-                SqlParameter[] parameters = new SqlParameter[12];
+                SqlParameter[] parameters = new SqlParameter[13];
                 SqlParameter param = null;
 
                 // verify imageexists
@@ -296,45 +302,51 @@ namespace DataAccessComponent.DataManager.Writers
                     // set parameters[4]
                     parameters[4] = param;
 
-                    // Create parameter for [ImageUrl]
-                    param = new SqlParameter("@ImageUrl", image.ImageUrl);
+                    // Create parameter for [ImageNumber]
+                    param = new SqlParameter("@ImageNumber", image.ImageNumber);
 
                     // set parameters[5]
                     parameters[5] = param;
 
-                    // Create parameter for [Name]
-                    param = new SqlParameter("@Name", image.Name);
+                    // Create parameter for [ImageUrl]
+                    param = new SqlParameter("@ImageUrl", image.ImageUrl);
 
                     // set parameters[6]
                     parameters[6] = param;
 
-                    // Create parameter for [OwnerId]
-                    param = new SqlParameter("@OwnerId", image.OwnerId);
+                    // Create parameter for [Name]
+                    param = new SqlParameter("@Name", image.Name);
 
                     // set parameters[7]
                     parameters[7] = param;
 
-                    // Create parameter for [SitePath]
-                    param = new SqlParameter("@SitePath", image.SitePath);
+                    // Create parameter for [OwnerId]
+                    param = new SqlParameter("@OwnerId", image.OwnerId);
 
                     // set parameters[8]
                     parameters[8] = param;
 
-                    // Create parameter for [Visible]
-                    param = new SqlParameter("@Visible", image.Visible);
+                    // Create parameter for [SitePath]
+                    param = new SqlParameter("@SitePath", image.SitePath);
 
                     // set parameters[9]
                     parameters[9] = param;
 
-                    // Create parameter for [Width]
-                    param = new SqlParameter("@Width", image.Width);
+                    // Create parameter for [Visible]
+                    param = new SqlParameter("@Visible", image.Visible);
 
                     // set parameters[10]
                     parameters[10] = param;
 
+                    // Create parameter for [Width]
+                    param = new SqlParameter("@Width", image.Width);
+
+                    // set parameters[11]
+                    parameters[11] = param;
+
                     // Create parameter for [Id]
                     param = new SqlParameter("@Id", image.Id);
-                    parameters[11] = param;
+                    parameters[12] = param;
                 }
 
                 // return value

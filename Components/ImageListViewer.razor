@@ -1,5 +1,5 @@
 ﻿@using ObjectLibrary.BusinessObjects
-@using DataJuggler.Blazor.Components
+@using BlazorStyled
 
 @if (ShowWelcomeMessage)
 {
@@ -23,7 +23,7 @@ else
         @if  (HasSelectedArtist)
         {
             <div class="height32">
-                @if (IsArtistGalleryOwner)
+                @if ((IsArtistGalleryOwner) && (SelectedArtist.HasImages) && (SelectedArtist.Images.Count < 15))
                 {  
                     <div class="uploadcontrol">                
                         <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
@@ -40,15 +40,11 @@ else
             </div>            
             <div class="galleryimages">
                 @if (SelectedArtist.HasImages)
-                {
-                    <div class="inlineblock">
-                        @foreach (Image image in SelectedArtist.Images)
-                        {
-                            <Sprite Scale=".1" Height="@image.Height" Width="@image.Width"
-                                ImageUrl="@image.ImageUrl">
-                            </Sprite>
-                        }
-                    </div>
+                { 
+                    @foreach (Image image in SelectedArtist.Images)
+                    {  
+                        <ImageButton Image=image></ImageButton>
+                    } 
                 }
             </div>
         }

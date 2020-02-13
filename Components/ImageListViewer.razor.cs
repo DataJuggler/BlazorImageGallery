@@ -27,7 +27,11 @@ namespace BlazorImageGallery.Components
         #region Private Variables
         private Image selectedImage;
         private string selectedImageCSS;
-        private string message;       
+        private string message;
+        private string imageStyle1;
+        private string imageUrl1;
+        private int columnNumber;
+        private int rowNumber;
         #endregion
 
         #region Methods
@@ -39,6 +43,9 @@ namespace BlazorImageGallery.Components
             /// <param name="uploadedFileInfo"></param>
             private async void OnFileUploaded(UploadedFileInfo uploadedFileInfo)
             {
+                // local
+                // bool abortUpdate = false;
+
                 // if aborted
                 if (uploadedFileInfo.Aborted)
                 {
@@ -63,7 +70,19 @@ namespace BlazorImageGallery.Components
                         image.Height = uploadedFileInfo.Height;
                         image.Width = uploadedFileInfo.Width;
                         image.SitePath = uploadedFileInfo.FullPath;
-                        image.ImageUrl = "../Images/Gallery/" + Artist.Name + "/" + uploadedFileInfo.Name;
+                        image.ImageUrl = "../Images/Gallery/" + Artist.Name + "/" + uploadedFileInfo.FullName;
+
+                        // If the value for the property Artist.HasImages is true
+                        if ((HasSelectedArtist) && (SelectedArtist.HasImages))
+                        {
+                            // add to the count; we do not have a delete, so no worry about out of order for this sample
+                            image.ImageNumber = GalleryManager.SelectedArtist.Images.Count + 1;
+                        }
+                        else
+                        {
+                            // set to 1 for the first item
+                            image.ImageNumber = 1;
+                        }
                         image.Visible = true;
 
                         // perform the save
@@ -72,14 +91,50 @@ namespace BlazorImageGallery.Components
                         // if saved
                         if (saved)
                         {
-                            // Set the message
-                            this.Message = "Image Saved.";
+                            // if saved
+                            if ((HasGalleryManager) && (GalleryManager.HasIndexPage))
+                            {
+                                // we only need to refresh once
+                                // abortUpdate = true;
+                                int position = GalleryManager.FindPosition(Artist.Id);
+
+                                // if the position is in range
+                                if ((position >= 1) && (position < 5))
+                                {
+                                    // Reset the selected artist
+                                    GalleryManager.SetSelectedArtist(position, GalleryManager.ArtistPageIndex);    
+
+                                    // Update the IndexPage
+                                    GalleryManager.IndexPage.Refresh();
+                                }
+                            }
                         }
                     }
                 }
 
                 // Refresh the UI
                 StateHasChanged();
+
+                // if we haven't already updated
+                // if (!abortUpdate)
+                // {
+                    // Refresh the UI
+                    // StateHasChanged();
+                // }
+            }
+            #endregion
+
+            #region OnInitializedAsync()
+            /// <summary>
+            /// Create a new instance of an OnInitializedAsync
+            /// </summary>
+            /// <returns></returns>
+            protected override Task OnInitializedAsync()
+            {
+                // Start off at negative 1, so the first increment goes to 0
+                ColumnNumber = -1;
+
+                return base.OnInitializedAsync();
             }
             #endregion
 
@@ -122,6 +177,17 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region ColumnNumber
+            /// <summary>
+            /// This property gets or sets the value for 'ColumnNumber'.
+            /// </summary>
+            public int ColumnNumber
+            {
+                get { return columnNumber; }
+                set { columnNumber = value; }
+            }
+            #endregion
+            
             #region GalleryManager
             /// <summary>
             /// The GalleryManager is available to all components
@@ -361,6 +427,28 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region ImageStyle1
+            /// <summary>
+            /// This property gets or sets the value for 'ImageStyle1'.
+            /// </summary>
+            public string ImageStyle1
+            {
+                get { return imageStyle1; }
+                set { imageStyle1 = value; }
+            }
+            #endregion
+            
+            #region ImageUrl1
+            /// <summary>
+            /// This property gets or sets the value for 'ImageUrl1'.
+            /// </summary>
+            public string ImageUrl1
+            {
+                get { return imageUrl1; }
+                set { imageUrl1 = value; }
+            }
+            #endregion
+            
             #region IsArtistGalleryOwner
             /// <summary>
             /// This read only property returns true if the GalleryManager.Artist is the SelectedArtist
@@ -396,6 +484,17 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region RowNumber
+            /// <summary>
+            /// This property gets or sets the value for 'RowNumber'.
+            /// </summary>
+            public int RowNumber
+            {
+                get { return rowNumber; }
+                set { rowNumber = value; }
+            }
+            #endregion
+            
             #region SelectedArtist
             /// <summary>
             /// This read only property 
