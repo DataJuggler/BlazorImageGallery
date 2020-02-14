@@ -28,7 +28,6 @@ namespace BlazorImageGallery.Util
         private Artist selectedArtist;
         private List<Artist> artists;
         private Index indexPage;
-        private bool resetDisplay;
         private int artistPageIndex;
         #endregion
 

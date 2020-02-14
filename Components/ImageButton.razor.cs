@@ -2,6 +2,8 @@
 
 #region using statements
 
+using DataJuggler.Blazor.Components;
+using DataJuggler.Blazor.Components.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace BlazorImageGallery.Components
     /// many properties from the component, they all just pull the values from 
     /// the underlying image object.
     /// </summary>
-    public partial class ImageButton 
+    public partial class ImageButton : IBlazorComponent
     {
         
         #region Private Variables
@@ -40,9 +42,27 @@ namespace BlazorImageGallery.Components
         private int columnNumber;
         private string columnLeftPixels;
         private string rowTopPixels;
+        private string name;
+        private IBlazorComponentParent parent;
+        private bool selected;
+        private string display;
+        private bool visible;
+        private int zIndex;
         public const int ImagesPerRow = 5;
         private const int RowHeight = 88;
         private const int ColumnWidth = 172;
+        #endregion
+
+        #region ImageButton()
+        /// <summary>
+        /// Create a new instance of an ImageButton object
+        /// </summary>
+        public ImageButton()
+        {
+            // default to true
+            Visible = true;
+            ZIndex = 1;
+        }
         #endregion
         
         #region Methods
@@ -52,6 +72,44 @@ namespace BlazorImageGallery.Components
             /// This method Button _ Clicked
             /// </summary>
             public void Button_Clicked()
+            {
+                if (!this.Selected)
+                {
+                    // Select this button
+                    this.Selected = true;
+                    this.Scale = .35;
+                    ZIndex = 10;
+                }
+                else
+                {  
+                    int imageNumber = 0;
+
+                    // if the value for HasImage is true
+                    if (HasImage)
+                    {
+                        // Set the value
+                        imageNumber = Image.ImageNumber;
+                    }
+
+                    this.Selected = false;
+                    this.Scale = .1;
+                    ZIndex = 1;
+                }
+
+                // if the Parent exists
+                if (HasParent)
+                {
+                    // we are registering again, but this is the easiest way
+                    Parent.Register(this);
+                }
+            }
+            #endregion
+
+            #region ReceiveData(Message message)
+            /// <summary>
+            /// method returns the Data
+            /// </summary>
+            public void ReceiveData(Message message)
             {
                 
             }
@@ -105,6 +163,7 @@ namespace BlazorImageGallery.Components
                     int width = 0;
                     string imageUrl = "";
                     int imageNumber = 0;
+                    string name = "";
                 
                     // if the value for HasImage is true
                     if (HasImage)
@@ -113,9 +172,11 @@ namespace BlazorImageGallery.Components
                         width = image.Width;
                         imageUrl = image.ImageUrl;
                         imageNumber = image.ImageNumber;
+                        name = image.Name;
                     }
                 
                     // Set the values
+                    this.Name = name;
                     this.ColumnNumber = SetColumnNumber(imageNumber);
                     this.RowNumber = SetRowNumber(imageNumber);
                     this.Height = height;
@@ -191,6 +252,17 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region Display
+            /// <summary>
+            /// This property gets or sets the value for 'Display'.
+            /// </summary>
+            public string Display
+            {
+                get { return display; }
+                set { display = value; }
+            }
+            #endregion
+            
             #region HasImage
             /// <summary>
             /// This property returns true if this object has an 'Image'.
@@ -204,6 +276,23 @@ namespace BlazorImageGallery.Components
                     
                     // return value
                     return hasImage;
+                }
+            }
+            #endregion
+            
+            #region HasParent
+            /// <summary>
+            /// This property returns true if this object has a 'Parent'.
+            /// </summary>
+            public bool HasParent
+            {
+                get
+                {
+                    // initial value
+                    bool hasParent = (this.Parent != null);
+                    
+                    // return value
+                    return hasParent;
                 }
             }
             #endregion
@@ -278,6 +367,40 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region Name
+            /// <summary>
+            /// This property gets or sets the value for 'Name'.
+            /// </summary>
+            public string Name
+            {
+                get { return name; }
+                set { name = value; }
+            }
+            #endregion
+            
+            #region Parent
+            /// <summary>
+            /// This property gets or sets the value for 'Parent'.
+            /// </summary>
+            [Parameter]
+            public IBlazorComponentParent Parent
+            {
+                get { return parent; }
+                set 
+                { 
+                    // store the parent
+                    parent = value;
+
+                    //// if the value for HasParent is true
+                    if (HasParent)
+                    {
+                        // Register with the parent
+                        Parent.Register(this);
+                    }
+                }
+            }
+            #endregion
+            
             #region RowNumber
             /// <summary>
             /// This property gets or sets the value for 'RowNumber'.
@@ -322,6 +445,42 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region Selected
+            /// <summary>
+            /// This property gets or sets the value for 'Selected'.
+            /// </summary>
+            public bool Selected
+            {
+                get { return selected; }
+                set { selected = value; }
+            }
+            #endregion
+            
+            #region Visible
+            /// <summary>
+            /// This property gets or sets the value for 'Visible'.
+            /// </summary>
+            public bool Visible
+            {
+                get { return visible; }
+                set 
+                { 
+                    visible = value;
+
+                    if (visible)
+                    {
+                        // set the value
+                        display = "inline-block";
+                    }
+                    else
+                    {
+                        // set the value for display
+                        display = "none";
+                    }
+                }
+            }
+            #endregion
+            
             #region Width
             /// <summary>
             /// This property gets or sets the value for 'Width'.
@@ -348,6 +507,17 @@ namespace BlazorImageGallery.Components
             {
                 get { return widthPixels; }
                 set { widthPixels = value; }
+            }
+            #endregion
+            
+            #region ZIndex
+            /// <summary>
+            /// This property gets or sets the value for 'ZIndex'.
+            /// </summary>
+            public int ZIndex
+            {
+                get { return zIndex; }
+                set { zIndex = value; }
             }
             #endregion
             

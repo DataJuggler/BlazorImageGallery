@@ -2,40 +2,118 @@
 
 #region using statements
 
+using BlazorImageGallery.Util;
+using DataGateway.Services;
+using DataJuggler.Blazor.FileUpload;
+using DataJuggler.Blazor.Components;
+using DataJuggler.Blazor.Components.Interfaces;
+using DataJuggler.UltimateHelper.Core;
+using Microsoft.AspNetCore.Components;
+using ObjectLibrary.BusinessObjects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using ObjectLibrary.BusinessObjects;
-using Microsoft.AspNetCore.Components;
-using BlazorImageGallery.Util;
-using DataJuggler.Blazor.FileUpload;
-using DataGateway.Services;
 
 #endregion
 
 namespace BlazorImageGallery.Components
 {
 
-    #region class ImageListViewer
+    #region class ImageListViewer  : IBlazorComponentParent
     /// <summary>
     /// This component is used to display the images for an Artist, or a mixed group of images by many artists.
     /// </summary>
-    public partial class ImageListViewer
+    public partial class ImageListViewer : IBlazorComponentParent
     {
         
         #region Private Variables
-        private Image selectedImage;
-        private string selectedImageCSS;
         private string message;
         private string imageStyle1;
         private string imageUrl1;
         private int columnNumber;
         private int rowNumber;
+        private ImageButton selectedButton;
+        private List<IBlazorComponent> children;
+        public const int MaxImagesPerArtist = 15;
         #endregion
 
         #region Methods
 
+            #region FindChildByName(string name)
+            /// <summary>
+            /// This method returns the Child Component By Name
+            /// </summary>
+            public IBlazorComponent FindChildByName(string name)
+            {
+                // initial value
+                IBlazorComponent child = null;
+                
+                // if the value for HasChildren is true
+                if ((HasChildren) && (TextHelper.Exists(name)))
+                {
+                    // Iterate the collection of IBlazorComponent objects
+                    foreach (IBlazorComponent childComponent in Children)
+                    {
+                        // if this is the item being sought
+                        if (TextHelper.IsEqual(childComponent.Name, name))
+                        {
+                            // set the return value
+                            child = childComponent;
+                            
+                            // break out of the loop
+                            break;
+                        }
+                    }
+                }
+                
+                // return value
+                return child;
+            }
+            #endregion
+            
+            #region Init()
+            /// <summary>
+            /// This method performs initializations for this object.
+            /// </summary>
+            public void Init()
+            {
+                // Create a new collection of 'IBlazorComponent' objects.
+                // this.Children = new List<IBlazorComponent>();
+            }
+            #endregion
+            
+            #region IsComponentRegistered(IBlazorComponent component)
+            /// <summary>
+            /// This method returns the Component Registered
+            /// </summary>
+            public bool IsComponentRegistered(IBlazorComponent component)
+            {
+                // initial value
+                bool isComponentRegistered = false;
+
+                // if the value for HasChildren is true
+                if ((HasChildren) && (NullHelper.Exists(component)))
+                {
+                    // Iterate the collection of IBlazorComponent objects
+                    foreach (IBlazorComponent child in Children)
+                    {
+                        // if the names match
+                        if (TextHelper.IsEqual(component.Name, child.Name))
+                        {
+                            // set the return value
+                            isComponentRegistered = true;
+
+                            // break out of the loop
+                            break;
+                        }
+                    }
+                }
+                
+                // return value
+                return isComponentRegistered;
+            }
+            #endregion
+            
             #region OnFileUploaded(UploadedFileInfo uploadedFileInfo)
             /// <summary>
             /// This method is called by DataJuggler.Blazor.FileUpload after a file is uploaded.
@@ -71,19 +149,19 @@ namespace BlazorImageGallery.Components
                         image.Width = uploadedFileInfo.Width;
                         image.SitePath = uploadedFileInfo.FullPath;
                         image.ImageUrl = "../Images/Gallery/" + Artist.Name + "/" + uploadedFileInfo.FullName;
+                        image.Visible = true;
 
                         // If the value for the property Artist.HasImages is true
                         if ((HasSelectedArtist) && (SelectedArtist.HasImages))
                         {
                             // add to the count; we do not have a delete, so no worry about out of order for this sample
-                            image.ImageNumber = GalleryManager.SelectedArtist.Images.Count + 1;
+                            image.ImageNumber = SelectedArtist.Images.Count + 1;
                         }
                         else
                         {
                             // set to 1 for the first item
                             image.ImageNumber = 1;
                         }
-                        image.Visible = true;
 
                         // perform the save
                         bool saved = await ImageService.SaveImage(ref image);
@@ -99,7 +177,7 @@ namespace BlazorImageGallery.Components
                                 int position = GalleryManager.FindPosition(Artist.Id);
 
                                 // if the position is in range
-                                if ((position >= 1) && (position < 5))
+                                if ((position >= 1) && (position <= 5))
                                 {
                                     // Reset the selected artist
                                     GalleryManager.SetSelectedArtist(position, GalleryManager.ArtistPageIndex);    
@@ -145,10 +223,62 @@ namespace BlazorImageGallery.Components
             /// <param name="notUsedButRequiredArg">InvokeAsync sends an object parameter, so I believe this or something is required.</param>
             private void OnReset(string notUsedButRequiredArg)
             {
+                if ((HasGalleryManager) &&(GalleryManager.HasIndexPage))
+                {
+                    // Update the whole page
+                    GalleryManager.IndexPage.Refresh();
+                }
+            }
+        #endregion
+
+            #region ReceiveData(Message message)
+            /// <summary>
+            /// method returns the Data
+            /// </summary>
+            public void ReceiveData(Message message)
+            {
                 
             }
             #endregion
+            
+            #region Refresh()
+            /// <summary>
+            /// method Refresh
+            /// </summary>
+            public void Refresh()
+            {
+                 // Update the UI
+                InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            }
+            #endregion
+            
+            #region Register(IBlazorComponent component)
+            /// <summary>
+            /// method returns the
+            /// </summary>
+            public void Register(IBlazorComponent component)
+            {
+                // this is only here as an example, I am not sure if we need to talk to the
+                // the selected image. 
+                ImageButton button = component as ImageButton;
 
+                // If the button object exists
+                if ((NullHelper.Exists(button)) && (button.Selected))
+                {
+                    // Set the selected button
+                    this.SelectedButton = button; 
+                }
+                else
+                {
+                    // destroy
+                    this.SelectedButton = null;
+                }
+            }
+            #endregion
+            
         #endregion
 
         #region Properties
@@ -177,6 +307,17 @@ namespace BlazorImageGallery.Components
             }
             #endregion
 
+            #region Children
+            /// <summary>
+            /// This property gets or sets the value for 'Children'.
+            /// </summary>
+            public List<IBlazorComponent> Children
+            {
+                get { return children; }
+                set { children = value; }
+            }
+            #endregion
+            
             #region ColumnNumber
             /// <summary>
             /// This property gets or sets the value for 'ColumnNumber'.
@@ -284,6 +425,23 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
+            #region HasChildren
+            /// <summary>
+            /// This property returns true if this object has a 'Children'.
+            /// </summary>
+            public bool HasChildren
+            {
+                get
+                {
+                    // initial value
+                    bool hasChildren = (this.Children != null);
+                    
+                    // return value
+                    return hasChildren;
+                }
+            }
+            #endregion
+            
             #region HasGalleryManager
             /// <summary>
             /// This property returns true if this object has a 'GalleryManager'.
@@ -386,19 +544,19 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
-            #region HasSelectedImage
+            #region HasSelectedButton
             /// <summary>
-            /// This property returns true if this object has a 'SelectedImage'.
+            /// This property returns true if this object has a 'SelectedButton'.
             /// </summary>
-            public bool HasSelectedImage
+            public bool HasSelectedButton
             {
                 get
                 {
                     // initial value
-                    bool hasSelectedImage = (this.SelectedImage != null);
+                    bool hasSelectedButton = (this.SelectedButton != null);
                     
                     // return value
-                    return hasSelectedImage;
+                    return hasSelectedButton;
                 }
             }
             #endregion
@@ -519,52 +677,14 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
-            #region SelectedImage
+            #region SelectedButton
             /// <summary>
-            /// This property gets or sets the value for 'SelectedImage'.
+            /// This property gets or sets the value for 'SelectedButton'.
             /// </summary>
-            public Image SelectedImage
+            public ImageButton SelectedButton
             {
-                get { return selectedImage; }
-                set { selectedImage = value; }
-            }
-            #endregion
-
-            #region SelectedImageCSS
-            /// <summary>
-            /// This property gets or sets the value for 'SelectedImageCSS'.
-            /// </summary>
-            public string SelectedImageCSS
-            {
-                get { return selectedImageCSS; }
-                set { selectedImageCSS = value; }
-            }
-            #endregion
-
-            #region SelectedImageCSS
-            /// <summary>
-            /// This property gets or sets the value for 'SelectedImageCSS'.
-            /// </summary>
-            public string SelectedImageURL
-            {
-                get 
-                {
-                    // initial value
-                    string selectedImageURL = "";
-
-                    // if the value for HasSelectedImage is true
-                    if (HasSelectedImage)
-                    {
-                        // Set the return value
-                        selectedImageURL = SelectedImage.ImageUrl;
-                    }
-
-                    // test only
-
-
-                    // return value
-                    return selectedImageURL;
-                }
+                get { return selectedButton; }
+                set { selectedButton = value; }
             }
             #endregion
             

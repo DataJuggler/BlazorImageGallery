@@ -7,11 +7,12 @@
     transform: scale(@Scale);
     transform-origin: left;   
     border: 2px solid black;
-    z-index: 1;
+    z-index: @ZIndex;
     outline: none;
     position: absolute;
     left: @ColumnLeftPixels;
     top: @RowTopPixels;
+    display: inline-block;
 </Styled>
 
 <button class="@ImageStyle" @onclick="Button_Clicked"></button>

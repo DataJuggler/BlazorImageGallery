@@ -23,7 +23,7 @@ else
         @if  (HasSelectedArtist)
         {
             <div class="height32">
-                @if ((IsArtistGalleryOwner) && (SelectedArtist.HasImages) && (SelectedArtist.Images.Count < 15))
+                @if ((IsArtistGalleryOwner) && (SelectedArtist.HasImages) && (SelectedArtist.Images.Count < MaxImagesPerArtist))
                 {  
                     <div class="uploadcontrol">                
                         <FileUpload CustomSuccessMessage="Your file uploaded successfully." OnChange="OnFileUploaded"
@@ -40,11 +40,18 @@ else
             </div>            
             <div class="galleryimages">
                 @if (SelectedArtist.HasImages)
-                { 
-                    @foreach (Image image in SelectedArtist.Images)
-                    {  
-                        <ImageButton Image=image></ImageButton>
-                    } 
+                {
+                    @if (HasSelectedButton)
+                    {
+                        <ImageButton Image=@SelectedButton.Image  Parent=this></ImageButton>
+                    }
+                    else
+                    {
+                        @foreach (Image image in SelectedArtist.Images)
+                        {  
+                            <ImageButton Image=image Parent=this></ImageButton>
+                        }
+                    }
                 }
             </div>
         }

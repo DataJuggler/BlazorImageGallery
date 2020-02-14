@@ -15,6 +15,7 @@
   <ItemGroup>
     <Folder Include="bin\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="SQL\" />
     <Folder Include="wwwroot\Images\Artists\" />
     <Folder Include="wwwroot\Images\Progress\" />
   </ItemGroup>
