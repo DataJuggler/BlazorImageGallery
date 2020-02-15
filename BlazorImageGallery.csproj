@@ -17,6 +17,7 @@
     <Folder Include="Interfaces\" />
     <Folder Include="SQL\" />
     <Folder Include="wwwroot\Images\Artists\" />
+    <Folder Include="wwwroot\Images\Gallery\" />
     <Folder Include="wwwroot\Images\Progress\" />
   </ItemGroup>
 
