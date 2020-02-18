@@ -7,9 +7,13 @@
 
   <ItemGroup>
     <Compile Remove="Data\**" />
+    <Compile Remove="wwwroot\Images\Progress\**" />
     <Content Remove="Data\**" />
+    <Content Remove="wwwroot\Images\Progress\**" />
     <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="wwwroot\Images\Progress\**" />
     <None Remove="Data\**" />
+    <None Remove="wwwroot\Images\Progress\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,7 +21,6 @@
     <Folder Include="SQL\" />
     <Folder Include="wwwroot\Images\Artists\" />
     <Folder Include="wwwroot\Images\Gallery\" />
-    <Folder Include="wwwroot\Images\Progress\" />
   </ItemGroup>
 
   <ItemGroup>
