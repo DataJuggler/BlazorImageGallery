@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <Folder Include="bin\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="SQL\" />
     <Folder Include="wwwroot\Images\Artists\" />
     <Folder Include="wwwroot\Images\Gallery\" />
@@ -27,8 +26,6 @@
     <PackageReference Include="DataJuggler.Blazor.FileUpload" Version="1.3.2" />
     <PackageReference Include="DataJuggler.Core.Cryptography" Version="1.0.11" />
     <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.2.0-preview1.20073.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.ProtectedBrowserStorage" Version="0.1.0-alpha.19521.1" />
   </ItemGroup>
 
