@@ -2,13 +2,10 @@
 
 #region using statements
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ObjectLibrary.BusinessObjects;
-using DataJuggler.UltimateHelper.Core;
 using BlazorImageGallery.Pages;
-using DataGateway.Services;
+using DataJuggler.UltimateHelper.Core;
+using ObjectLibrary.BusinessObjects;
+using System.Collections.Generic;
 
 #endregion
 
