@@ -40,17 +40,10 @@ else
             </div>            
             <div class="galleryimages">
                 @if (SelectedArtist.HasImages)
-                {
-                    @if (HasSelectedButton)
-                    {
-                        <ImageButton Image=@SelectedButton.Image  Parent=this></ImageButton>
-                    }
-                    else
-                    {
-                        @foreach (Image image in SelectedArtist.Images)
-                        {  
-                            <ImageButton Image=image Parent=this></ImageButton>
-                        }
+                { 
+                    @foreach (Image image in SelectedArtist.Images)
+                    {  
+                        <ImageButton Image=image Parent=this></ImageButton>
                     }
                 }
             </div>

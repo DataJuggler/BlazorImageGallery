@@ -36,7 +36,7 @@ namespace BlazorImageGallery.Components
         public const int ArtistsPerPage = 5;        
         #endregion
 
-        #region ArtistListViewer()
+        #region Constructor()
         /// <summary>
         /// Create a new instance of an ArtistListViewer object
         /// </summary>

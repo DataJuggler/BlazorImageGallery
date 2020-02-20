@@ -62,6 +62,7 @@ namespace BlazorImageGallery.Components
         /// </summary>
         public Login()
         {
+            
         }
         #endregion
 

@@ -32,7 +32,6 @@ namespace BlazorImageGallery.Components
         private string imageUrl1;
         private int columnNumber;
         private int rowNumber;
-        private ImageButton selectedButton;
         private List<IBlazorComponent> children;
         public const int MaxImagesPerArtist = 15;
         #endregion
@@ -261,21 +260,9 @@ namespace BlazorImageGallery.Components
             /// </summary>
             public void Register(IBlazorComponent component)
             {
-                // this is only here as an example, I am not sure if we need to talk to the
-                // the selected image. 
+                // this is only here as an example, I am not sure if we need 
+                // to talk to the the selected button.
                 ImageButton button = component as ImageButton;
-
-                // If the button object exists
-                if ((NullHelper.Exists(button)) && (button.Selected))
-                {
-                    // Set the selected button
-                    this.SelectedButton = button; 
-                }
-                else
-                {
-                    // destroy
-                    this.SelectedButton = null;
-                }
             }
             #endregion
             
@@ -544,23 +531,6 @@ namespace BlazorImageGallery.Components
             }
             #endregion
             
-            #region HasSelectedButton
-            /// <summary>
-            /// This property returns true if this object has a 'SelectedButton'.
-            /// </summary>
-            public bool HasSelectedButton
-            {
-                get
-                {
-                    // initial value
-                    bool hasSelectedButton = (this.SelectedButton != null);
-                    
-                    // return value
-                    return hasSelectedButton;
-                }
-            }
-            #endregion
-            
             #region Images
             /// <summary>
             /// This property gets or sets the value for 'Images'.
@@ -674,17 +644,6 @@ namespace BlazorImageGallery.Components
                     // return value
                     return selectedArtist;
                 }
-            }
-            #endregion
-            
-            #region SelectedButton
-            /// <summary>
-            /// This property gets or sets the value for 'SelectedButton'.
-            /// </summary>
-            public ImageButton SelectedButton
-            {
-                get { return selectedButton; }
-                set { selectedButton = value; }
             }
             #endregion
             
