@@ -288,7 +288,7 @@ namespace BlazorImageGallery.Components
             }
         #endregion
 
-        #region OnInitializedAsync()
+            #region OnInitializedAsync()
             /// <summary>
             /// This method is used to restored values stored in local storage
             /// </summary>

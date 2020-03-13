@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="DataJuggler.Net.Core" Version="2.1.5" />
-    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.0" />
+    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>

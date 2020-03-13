@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlazorStyled" Version="1.2.0" />
+    <PackageReference Include="BlazorStyled" Version="2.1.0" />
     <PackageReference Include="DataJuggler.Blazor.Components" Version="1.1.2" />
-    <PackageReference Include="DataJuggler.Blazor.FileUpload" Version="1.3.2" />
+    <PackageReference Include="DataJuggler.Blazor.FileUpload" Version="1.3.4" />
     <PackageReference Include="DataJuggler.Core.Cryptography" Version="1.0.11" />
-    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.0" />
+    <PackageReference Include="DataJuggler.UltimateHelper.Core" Version="1.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.ProtectedBrowserStorage" Version="0.1.0-alpha.19521.1" />
   </ItemGroup>
 
