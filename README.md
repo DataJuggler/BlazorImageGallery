@@ -1,3 +1,13 @@
+# Newew Better Project
+6.26.2023: I have a new project called Blazor Gallery:<br>
+https://github.com/DataJuggler/BlazorGallery
+
+Blazor Gallery is also a live site:<br>
+https://blazorgallery.com 
+
+Video for Blazor Gallery:<br>
+https://youtu.be/HAMgeaCuvHY 
+
 # BlazorImageGallery
 This is a sample project I am building to demonstrate the BlazorFileUpload component, BlazorStyled, DataTier.Net and others.
 
